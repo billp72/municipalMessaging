@@ -9,6 +9,12 @@
 .history
 .svn/
 migrate_working_dir/
+.tmp/
+.vscode/
+caches/
+daemon/
+wrapper/
+native/
 
 # IntelliJ related
 *.iml
