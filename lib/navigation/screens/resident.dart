@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
-class Login extends StatelessWidget {
-  const Login({Key? key, required this.title}) : super(key: key);
+class Resident extends StatelessWidget {
+  const Resident({Key? key, required this.title}) : super(key: key);
   final String title;
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-        body: MyLoginPage(
+        body: MySignupPage(
       title: '',
     ));
   }
 }
 
-class MyLoginPage extends StatefulWidget {
-  const MyLoginPage({super.key, required this.title});
+class MySignupPage extends StatefulWidget {
+  const MySignupPage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -28,10 +28,10 @@ class MyLoginPage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyLoginPage> createState() => _MyHomePageState();
+  State<MySignupPage> createState() => _MySignupPageState();
 }
 
-class _MyHomePageState extends State<MyLoginPage> {
+class _MySignupPageState extends State<MySignupPage> {
   //int _counter = 0;
 
   //void _incrementCounter() {
@@ -44,11 +44,6 @@ class _MyHomePageState extends State<MyLoginPage> {
   // _counter++;
   // });
   // }
-  // ignore: use_build_context_synchronously
-  void _handleNavigation(String route) {
-    Navigator.pushNamedAndRemoveUntil(
-        context, route, ModalRoute.withName(route));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +55,7 @@ class _MyHomePageState extends State<MyLoginPage> {
     // than having to individually change instances of widgets.
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Municipal Message'),
+          title: const Text('Sign up'),
         ),
         body: Container(
             decoration: BoxDecoration(
@@ -73,21 +68,11 @@ class _MyHomePageState extends State<MyLoginPage> {
             ),
             child: ResponsiveGridRow(children: [
               ResponsiveGridCol(
-                xs: 12,
-                child: Container(
-                  height: 200,
-                  alignment: const Alignment(0, 0),
-                  //color: Colors.blue,
-                  child: const Text(""),
-                ),
-              ),
-              ResponsiveGridCol(
                 lg: 12,
                 child: Container(
                   height: 80,
                   alignment: const Alignment(0, 0),
-                  child: Text(
-                      'Welcome to Home Cookn\', a place to order home-cooked meals and have them delivered directly from their home to users. Peruse home cooks in your area to see what\'s on the menu for today.',
+                  child: Text('signup',
                       maxLines: 10,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -106,10 +91,12 @@ class _MyHomePageState extends State<MyLoginPage> {
                   alignment: const Alignment(0, 0),
                   //color: Colors.green,
                   child: ElevatedButton(
-                    child: const Text('RESIDENT',
-                        style: TextStyle(fontSize: 15.0)),
+                    child: const Text('BACK', style: TextStyle(fontSize: 15.0)),
                     onPressed: () {
-                      _handleNavigation('/resident');
+                      Navigator.of(context).pushNamed(
+                        '/',
+                        arguments: 'Landing!',
+                      );
                     },
                   ),
                 ),
@@ -121,13 +108,8 @@ class _MyHomePageState extends State<MyLoginPage> {
                   height: 100,
                   alignment: const Alignment(0, 0),
                   //color: Colors.orange,
-                  child: ElevatedButton(
-                    child: const Text('GOVERNMENT',
-                        style: TextStyle(fontSize: 15.0)),
-                    onPressed: () {
-                      _handleNavigation('/government');
-                    },
-                  ),
+                  child: const Text('RESIDENT SIGN UP',
+                      style: TextStyle(fontSize: 15.0)),
                 ),
               ),
               /**/

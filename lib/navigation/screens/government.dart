@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
-class Signup extends StatelessWidget {
-  const Signup({Key? key, required this.title}) : super(key: key);
+class Government extends StatelessWidget {
+  const Government({Key? key, required this.title}) : super(key: key);
   final String title;
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class _MySignupPageState extends State<MySignupPage> {
     // than having to individually change instances of widgets.
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Sign up'),
+          title: const Text('Government Sign up'),
         ),
         body: Container(
             decoration: BoxDecoration(
@@ -108,8 +108,8 @@ class _MySignupPageState extends State<MySignupPage> {
                   height: 100,
                   alignment: const Alignment(0, 0),
                   //color: Colors.orange,
-                  child:
-                      const Text('SIGN UP', style: TextStyle(fontSize: 15.0)),
+                  child: const Text('GOVERNMENT SIGN UP',
+                      style: TextStyle(fontSize: 15.0)),
                 ),
               ),
               /**/
