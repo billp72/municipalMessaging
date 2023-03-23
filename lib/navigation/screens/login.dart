@@ -122,10 +122,10 @@ class _MyHomePageState extends State<MyLoginPage> {
                   alignment: const Alignment(0, 0),
                   //color: Colors.orange,
                   child: ElevatedButton(
-                    child: const Text('GOVERNMENT',
+                    child: const Text('MUNICIPALITY',
                         style: TextStyle(fontSize: 15.0)),
                     onPressed: () {
-                      _handleNavigation('/government');
+                      _handleNavigation('/municipality');
                     },
                   ),
                 ),

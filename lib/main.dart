@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         '/resident': (context) => const Resident(
               title: 'Resident',
             ),
-        '/government': (context) => const Government(title: 'Government'),
+        '/municipality': (context) => const Government(title: 'Municipality'),
         '/home': (context) => const MyHomePage(title: 'Home'),
       },
       theme: ThemeData(

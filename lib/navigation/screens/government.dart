@@ -55,7 +55,7 @@ class _MySignupPageState extends State<MySignupPage> {
     // than having to individually change instances of widgets.
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Government Sign up'),
+          title: const Text('Municipality Sign up'),
         ),
         body: Container(
             decoration: BoxDecoration(
