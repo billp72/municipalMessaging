@@ -40,6 +40,7 @@ native/
 /android/app/google-services.json
 /ios/firebase_app_id_file.json
 /ios/Runner/GoogleService-info.plist
+/macos/firebase_app_id_file.json
 /macos/Runner/GoogleService-info.plist
 # Symbolication related
 app.*.symbols
