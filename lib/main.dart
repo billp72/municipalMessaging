@@ -10,9 +10,7 @@ import 'navigation/landing_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
   HttpsCallable callable =
       FirebaseFunctions.instance.httpsCallable('helloWorld');
