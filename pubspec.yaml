@@ -38,6 +38,7 @@ dependencies:
   responsive_grid: ^2.2.0
   firebase_core: ^2.8.0
   cloud_functions: ^4.0.13
+  firebase_auth: ^4.3.0
 
 dev_dependencies:
   flutter_test:

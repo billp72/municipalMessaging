@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,8 +11,6 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingState extends State<LandingPage> {
-  String _username = "";
-
   @override
   void initState() {
     super.initState();
@@ -18,16 +18,35 @@ class _LandingState extends State<LandingPage> {
   }
 
   _loadUserInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _username = (prefs.getString('username') ?? "");
-    if (_username == "") {
+    var user = await getMap();
+    // ignore: avoid_print
+    print(user);
+    if (user.isEmpty) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
           context, '/login', ModalRoute.withName('/login'));
     } else {
-      // ignore: use_build_context_synchronously
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/home', ModalRoute.withName('/home'));
+      if (user.containsKey('claims')) {
+        if (user["claims"].admin) {
+          // ignore: use_build_context_synchronously
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/admin', ModalRoute.withName('/home'));
+        } else {
+          // ignore: use_build_context_synchronously
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/home', ModalRoute.withName('/home'));
+        }
+      }
+    }
+  }
+
+  static Future getMap() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? user = prefs.getString("USER");
+    if (user?.isNotEmpty == true) {
+      return jsonDecode(user ?? "") ?? {};
+    } else {
+      return "";
     }
   }
 
