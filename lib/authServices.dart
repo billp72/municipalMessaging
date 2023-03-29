@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthServices {
   final _auth = FirebaseAuth.instance;
-  dynamic myrole;
+  HttpsCallable? myrole;
 
   void initializeFbState() {
     _userFromFirebase();
@@ -47,7 +47,7 @@ class AuthServices {
       }
       // ignore: duplicate_ignore
       try {
-        final user = await myrole.call(<String, dynamic>{
+        final user = await myrole?.call(<String, dynamic>{
           'uid': uid,
           'municipality': muni,
           'push': push,
@@ -55,7 +55,7 @@ class AuthServices {
           'email': email,
           'name': name
         });
-        var u = user.data;
+        var u = user?.data;
         print(u);
       } catch (e) {
         print('$e ERROR FETCHING USER DATA');
