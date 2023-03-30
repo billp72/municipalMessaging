@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const MyHomePage(title: 'Home'),
       },
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.blue,
       ),
     );
   }
