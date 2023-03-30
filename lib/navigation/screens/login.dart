@@ -164,7 +164,7 @@ class _MyHomePageState extends State<MyLoginPage> {
                   padding: const EdgeInsets.all(8.0),
                   alignment: const Alignment(0, 0),
                   child: Text(
-                      'Welcome to Municipal Messaging! An app to get direct message from your town government. To begin, click Resident. Or, and if you\'re a government employee, click Municipality',
+                      'Welcome to Municipal Messaging! An app to get direct messages from your city government. To begin, click Resident. Or, and if you\'re a government employee, click Municipality',
                       maxLines: 10,
                       textAlign: TextAlign.center,
                       style: TextStyle(
