@@ -160,7 +160,7 @@ class _MyHomePageState extends State<MyLoginPage> {
               ResponsiveGridCol(
                 lg: 12,
                 child: Container(
-                  height: 120,
+                  height: 150,
                   padding: const EdgeInsets.all(8.0),
                   alignment: const Alignment(0, 0),
                   child: Text(
