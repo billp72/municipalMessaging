@@ -24,12 +24,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _loadUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _username = (prefs.getString('username') ?? "");
+    _username = (prefs.getString('USER') ?? "");
   }
 
   void _handleLogout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("username");
+    prefs.remove("USER");
     // ignore: use_build_context_synchronously
     Navigator.pushNamedAndRemoveUntil(
         context, '/login', ModalRoute.withName('/login'));

@@ -1,36 +1,32 @@
-// ignore_for_file: file_names, avoid_print
-//import 'dart:convert';
+// ignore_for_file: file_names
 import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthServices {
   final _auth = FirebaseAuth.instance;
   HttpsCallable? myrole;
 
-  void initializeFbState() {
-    _userFromFirebase();
-  }
-
-  Future _userFromFirebase() async {
-    final prefs = await SharedPreferences.getInstance();
-    _auth.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print("NO AUTH CHANGE");
-        prefs.clear();
-      } else {
-        getCustomClaims(user, prefs);
-      }
-    });
-  }
-
   Future getCustomClaims(user, prefs) async {
     HttpsCallable callable =
-        FirebaseFunctions.instance.httpsCallable('customClaim');
+        FirebaseFunctions.instance.httpsCallable('getCustomClaim');
     final resp = await callable.call(<String, dynamic>{'uid': user.uid});
     user.claims = resp;
     prefs.setString("USER", jsonEncode(user));
+  }
+
+  Future signInWithEmailAndPassword(String email, String password) async {
+    try {
+      final result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      final user = result.user;
+      //print('Successfully logged in, User UID: ${user?.uid}');
+      return user?.uid;
+    } catch (error) {
+      // ignore: avoid_print
+      print(error.toString());
+      return null;
+    }
   }
 
   Future registerWithEmailAndPassword(String email, String password,
@@ -56,19 +52,24 @@ class AuthServices {
           'name': name
         });
         var u = user?.data;
+        // ignore: avoid_print
         print(u);
       } catch (e) {
+        // ignore: avoid_print
         print('$e ERROR FETCHING USER DATA');
       }
     } on FirebaseAuthException catch (e) {
       // ignore: duplicate_ignore
       if (e.code == 'weak-password') {
+        // ignore: avoid_print
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
+        // ignore: avoid_print
         print('The account already exists for that email.');
       }
       // ignore: duplicate_ignore
     } catch (error) {
+      // ignore: avoid_print
       print(error.toString());
       return null;
     }

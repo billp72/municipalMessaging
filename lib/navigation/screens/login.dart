@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors
-
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
+import '../../authServices.dart';
 
 class Login extends StatelessWidget {
   const Login({Key? key, required this.title}) : super(key: key);
@@ -36,16 +37,26 @@ class MyLoginPage extends StatefulWidget {
 class _MyHomePageState extends State<MyLoginPage> {
   //int _counter = 0;
 
-  //void _incrementCounter() {
-  // setState(() {
-  // This call to setState tells the Flutter framework that something has
-  // changed in this State, which causes it to rerun the build method below
-  // so that the display can reflect the updated values. If we changed
-  // _counter without calling setState(), then the build method would not be
-  // called again, and so nothing would appear to happen.
-  // _counter++;
-  // });
-  // }
+  Future login(String email, String password) async {
+    final AuthServices auth = AuthServices();
+    final isAuth = await auth.signInWithEmailAndPassword(email, password);
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('getCustomClaim');
+    final resp = await callable.call(<String, dynamic>{'uid': isAuth});
+    var d = resp.data;
+    // ignore: avoid_print
+    print(d);
+    // if (d["admin"] == false) {
+    //   // ignore: use_build_context_synchronously
+    //   Navigator.pushNamedAndRemoveUntil(
+    //       context, '/home', ModalRoute.withName('/home'));
+    // } else if (d["admin"] == true) {
+    //   // ignore: use_build_context_synchronously
+    //   Navigator.pushNamedAndRemoveUntil(
+    //       context, '/admin', ModalRoute.withName('/admin'));
+    // }
+  }
+
   // ignore: use_build_context_synchronously
   void _handleNavigation(String route) {
     Navigator.pushNamedAndRemoveUntil(
@@ -141,10 +152,7 @@ class _MyHomePageState extends State<MyLoginPage> {
                               if (_formKey.currentState!.validate()) {
                                 // If the form is valid, display a snackbar. In the real world,
                                 // you'd often call a server or save the information in a database.
-                                // ignore: avoid_print
-                                print(myEmail.text);
-                                // ignore: avoid_print
-                                print(myPassword.text);
+                                login(myEmail.text, myPassword.text);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processing Data')),

@@ -30,7 +30,7 @@ class _LandingState extends State<LandingPage> {
         if (user["claims"].admin) {
           // ignore: use_build_context_synchronously
           Navigator.pushNamedAndRemoveUntil(
-              context, '/admin', ModalRoute.withName('/home'));
+              context, '/admin', ModalRoute.withName('/admin'));
         } else {
           // ignore: use_build_context_synchronously
           Navigator.pushNamedAndRemoveUntil(
