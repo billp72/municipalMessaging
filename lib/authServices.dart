@@ -15,7 +15,6 @@ class AuthServices {
     resp.data["displayName"] = user?.displayName;
     resp.data["email"] = user?.email;
     resp.data["phoneNumber"] = user?.phoneNumber;
-    print(resp.data);
     prefs.setString("USER", jsonEncode(resp.data));
   }
 
@@ -24,8 +23,8 @@ class AuthServices {
       final result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       final user = result.user;
-      //print('Successfully logged in, User UID: ${user?.uid}');
       return user?.uid;
+      // ignore: duplicate_ignore
     } catch (error) {
       // ignore: avoid_print
       print(error.toString());

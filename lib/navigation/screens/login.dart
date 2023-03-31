@@ -35,7 +35,6 @@ class MyLoginPage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyLoginPage> {
-
   Future login(String email, String password) async {
     final AuthServices auth = AuthServices();
     final isAuth = await auth.signInWithEmailAndPassword(email, password);
