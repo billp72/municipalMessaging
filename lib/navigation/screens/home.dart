@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _handleLogout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await FirebaseAuth.instance.signOut();
     prefs.remove("USER");
     // ignore: use_build_context_synchronously
     Navigator.pushNamedAndRemoveUntil(

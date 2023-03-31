@@ -29,7 +29,6 @@ Future<void> main() async {
 
   authenticate.authStateChanges().listen((User? user) {
     if (user == null) {
-      print("NO AUTH CHANGE");
       prefs.clear();
     } else {
       auth.getCustomClaims(user, prefs);

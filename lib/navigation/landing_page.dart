@@ -20,14 +20,13 @@ class _LandingState extends State<LandingPage> {
   _loadUserInfo() async {
     var user = await getMap();
     // ignore: avoid_print
-    print(user);
     if (user.isEmpty) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
           context, '/login', ModalRoute.withName('/login'));
     } else {
-      if (user.containsKey('claims')) {
-        if (user["claims"].admin) {
+      if (user.containsKey('admin')) {
+        if (user["admin"]) {
           // ignore: use_build_context_synchronously
           Navigator.pushNamedAndRemoveUntil(
               context, '/admin', ModalRoute.withName('/admin'));

@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, avoid_print
 import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,8 +11,12 @@ class AuthServices {
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('getCustomClaim');
     final resp = await callable.call(<String, dynamic>{'uid': user.uid});
-    user.claims = resp;
-    prefs.setString("USER", jsonEncode(user));
+    resp.data["uid"] = user.uid;
+    resp.data["displayName"] = user?.displayName;
+    resp.data["email"] = user?.email;
+    resp.data["phoneNumber"] = user?.phoneNumber;
+    print(resp.data);
+    prefs.setString("USER", jsonEncode(resp.data));
   }
 
   Future signInWithEmailAndPassword(String email, String password) async {

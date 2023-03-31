@@ -35,7 +35,6 @@ class MyLoginPage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyLoginPage> {
-  //int _counter = 0;
 
   Future login(String email, String password) async {
     final AuthServices auth = AuthServices();
@@ -44,17 +43,16 @@ class _MyHomePageState extends State<MyLoginPage> {
         FirebaseFunctions.instance.httpsCallable('getCustomClaim');
     final resp = await callable.call(<String, dynamic>{'uid': isAuth});
     var d = resp.data;
-    // ignore: avoid_print
-    print(d);
-    // if (d["admin"] == false) {
-    //   // ignore: use_build_context_synchronously
-    //   Navigator.pushNamedAndRemoveUntil(
-    //       context, '/home', ModalRoute.withName('/home'));
-    // } else if (d["admin"] == true) {
-    //   // ignore: use_build_context_synchronously
-    //   Navigator.pushNamedAndRemoveUntil(
-    //       context, '/admin', ModalRoute.withName('/admin'));
-    // }
+    //ignore: avoid_print
+    if (d["admin"] == false) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/home', ModalRoute.withName('/home'));
+    } else if (d["admin"] == true) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/admin', ModalRoute.withName('/admin'));
+    }
   }
 
   // ignore: use_build_context_synchronously
@@ -172,7 +170,7 @@ class _MyHomePageState extends State<MyLoginPage> {
                   padding: const EdgeInsets.all(8.0),
                   alignment: const Alignment(0, 0),
                   child: Text(
-                      'Welcome to Municipal Messaging! An app to get direct messages from your city government. To begin, click Resident. Or, and if you\'re a government employee, click Municipality',
+                      'Welcome to Municipal Messaging! An app to get direct messages from your city government. To begin, click Resident. Or if you\'re a government employee, click Municipality',
                       maxLines: 10,
                       textAlign: TextAlign.center,
                       style: TextStyle(
