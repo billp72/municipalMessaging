@@ -1,3 +1,5 @@
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
@@ -23,7 +25,45 @@ class MySignupPage extends StatefulWidget {
 }
 
 class _MySignupPageState extends State<MySignupPage> {
-  Future submit(String email, String password) async {}
+  Future createUser(
+      credentials, String phone, String state, String city, String name) async {
+    // ignore: avoid_print
+    //print(credentials);
+    // ignore: unnecessary_brace_in_string_interps
+    String muni = '${city}_${state}';
+    final u = FirebaseAuth.instance.currentUser;
+    // ignore: avoid_print
+    print(u?.uid);
+
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('residentLevel');
+    final resp = await callable.call(<String, dynamic>{
+      'uid': u?.uid,
+      'municipality': muni,
+      'phone': phone,
+      'name': name
+    });
+    // ignore: avoid_print
+    print(resp.data);
+    // ignore: avoid_print
+  }
+
+  Future submit(String email, String password, String phone, String state,
+      String city, String name) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      createUser(userCredential, phone, state, city, name);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +71,11 @@ class _MySignupPageState extends State<MySignupPage> {
     final _formKey = GlobalKey<FormState>();
     final myPassword = TextEditingController();
     final myEmail = TextEditingController();
+    final name = TextEditingController();
+    final city = TextEditingController();
+    final state = TextEditingController();
+    final phone = TextEditingController();
+    final remyPassword = TextEditingController();
     return Scaffold(
         appBar: AppBar(
           title: const Text('Municipal Message - Sign up'),
@@ -58,13 +103,7 @@ class _MySignupPageState extends State<MySignupPage> {
                           //alignment: const Alignment(0, 0),
                           //color: Colors.blue,
                           child: TextFormField(
-                            controller: myPassword,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
+                            controller: name,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Name (optional)',
@@ -80,7 +119,7 @@ class _MySignupPageState extends State<MySignupPage> {
                           //alignment: const Alignment(0, 0),
                           //color: Colors.blue,
                           child: TextFormField(
-                            controller: myEmail,
+                            controller: city,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter some text';
@@ -102,7 +141,7 @@ class _MySignupPageState extends State<MySignupPage> {
                           //alignment: const Alignment(0, 0),
                           //color: Colors.blue,
                           child: TextFormField(
-                            controller: myPassword,
+                            controller: state,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter some text';
@@ -124,7 +163,7 @@ class _MySignupPageState extends State<MySignupPage> {
                           //alignment: const Alignment(0, 0),
                           //color: Colors.blue,
                           child: TextFormField(
-                            controller: myPassword,
+                            controller: myEmail,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a valid email';
@@ -146,7 +185,7 @@ class _MySignupPageState extends State<MySignupPage> {
                           //alignment: const Alignment(0, 0),
                           //color: Colors.blue,
                           child: TextFormField(
-                            controller: myPassword,
+                            controller: phone,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter some text';
@@ -190,7 +229,7 @@ class _MySignupPageState extends State<MySignupPage> {
                           //alignment: const Alignment(0, 0),
                           //color: Colors.blue,
                           child: TextFormField(
-                            controller: myPassword,
+                            controller: remyPassword,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter some text';
@@ -218,11 +257,19 @@ class _MySignupPageState extends State<MySignupPage> {
                               if (_formKey.currentState!.validate()) {
                                 // If the form is valid, display a snackbar. In the real world,
                                 // you'd often call a server or save the information in a database.
-                                submit(myEmail.text, myPassword.text);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Processing Data')),
-                                );
+                                if (myPassword.text == remyPassword.text) {
+                                  submit(
+                                      myEmail.text,
+                                      myPassword.text,
+                                      phone.text,
+                                      state.text,
+                                      city.text,
+                                      name.text);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Processing Data')),
+                                  );
+                                }
                               }
                             },
                             child: const Text('SUBMIT'),

@@ -16,15 +16,6 @@ class Government extends StatelessWidget {
 class MySignupPage extends StatefulWidget {
   const MySignupPage({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -32,27 +23,20 @@ class MySignupPage extends StatefulWidget {
 }
 
 class _MySignupPageState extends State<MySignupPage> {
-  //int _counter = 0;
-
-  //void _incrementCounter() {
-  // setState(() {
-  // This call to setState tells the Flutter framework that something has
-  // changed in this State, which causes it to rerun the build method below
-  // so that the display can reflect the updated values. If we changed
-  // _counter without calling setState(), then the build method would not be
-  // called again, and so nothing would appear to happen.
-  // _counter++;
-  // });
-  // }
+  Future submit(String email, String password, String phone, String state,
+      String city, String name) async {}
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    // ignore: no_leading_underscores_for_local_identifiers
+    final _formKey = GlobalKey<FormState>();
+    final myPassword = TextEditingController();
+    final myEmail = TextEditingController();
+    final name = TextEditingController();
+    final city = TextEditingController();
+    final state = TextEditingController();
+    final phone = TextEditingController();
+    final remyPassword = TextEditingController();
     return Scaffold(
         appBar: AppBar(
           title: const Text('Municipality Sign up'),
@@ -68,49 +52,192 @@ class _MySignupPageState extends State<MySignupPage> {
             ),
             child: ResponsiveGridRow(children: [
               ResponsiveGridCol(
-                lg: 12,
-                child: Container(
-                  height: 80,
-                  alignment: const Alignment(0, 0),
-                  child: Text('signup',
-                      maxLines: 10,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          height: 1.3,
-                          color: Colors.grey[600],
-                          fontStyle: FontStyle.italic)),
-                ),
-              ),
-              ResponsiveGridCol(
-                xs: 6,
-                md: 3,
-                child: Container(
-                  height: 100,
-                  alignment: const Alignment(0, 0),
-                  //color: Colors.green,
-                  child: ElevatedButton(
-                    child: const Text('BACK', style: TextStyle(fontSize: 15.0)),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        '/',
-                        arguments: 'Landing!',
-                      );
-                    },
-                  ),
-                ),
-              ),
-              ResponsiveGridCol(
-                xs: 6,
-                md: 3,
-                child: Container(
-                  height: 100,
-                  alignment: const Alignment(0, 0),
-                  //color: Colors.orange,
-                  child: const Text('GOVERNMENT SIGN UP',
-                      style: TextStyle(fontSize: 15.0)),
-                ),
+                xs: 12,
+                child: Form(
+                    key: _formKey,
+                    child: ResponsiveGridRow(children: [
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.all(10.0),
+                          //alignment: const Alignment(0, 0),
+                          //color: Colors.blue,
+                          child: TextFormField(
+                            controller: name,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Name (optional)',
+                            ),
+                          ),
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.all(10.0),
+                          //alignment: const Alignment(0, 0),
+                          //color: Colors.blue,
+                          child: TextFormField(
+                            controller: city,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'City',
+                            ),
+                          ),
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.all(10.0),
+                          //alignment: const Alignment(0, 0),
+                          //color: Colors.blue,
+                          child: TextFormField(
+                            controller: state,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'State',
+                            ),
+                          ),
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.all(10.0),
+                          //alignment: const Alignment(0, 0),
+                          //color: Colors.blue,
+                          child: TextFormField(
+                            controller: myEmail,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Email',
+                            ),
+                          ),
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.all(10.0),
+                          //alignment: const Alignment(0, 0),
+                          //color: Colors.blue,
+                          child: TextFormField(
+                            controller: phone,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Phone',
+                            ),
+                          ),
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.all(10.0),
+                          //alignment: const Alignment(0, 0),
+                          //color: Colors.blue,
+                          child: TextFormField(
+                            controller: myPassword,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Password',
+                            ),
+                          ),
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.all(10.0),
+                          //alignment: const Alignment(0, 0),
+                          //color: Colors.blue,
+                          child: TextFormField(
+                            controller: remyPassword,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Re-enter password',
+                            ),
+                          ),
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: Container(
+                          height: 30,
+                          margin: const EdgeInsets.all(10.0),
+                          //alignment: const Alignment(0, 0),
+                          //color: Colors.blue,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Validate returns true if the form is valid, or false otherwise.
+                              // ignore: avoid_print
+                              if (_formKey.currentState!.validate()) {
+                                // If the form is valid, display a snackbar. In the real world,
+                                // you'd often call a server or save the information in a database.
+                                if (myPassword.text == remyPassword.text) {
+                                  submit(
+                                      myEmail.text,
+                                      myPassword.text,
+                                      phone.text,
+                                      state.text,
+                                      city.text,
+                                      name.text);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Processing Data')),
+                                  );
+                                }
+                              }
+                            },
+                            child: const Text('SUBMIT'),
+                          ),
+                        ),
+                      ),
+                    ])),
               ),
               /**/
             ])));
