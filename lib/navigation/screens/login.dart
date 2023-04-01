@@ -56,18 +56,14 @@ class _MyHomePageState extends State<MyLoginPage> {
 
   // ignore: use_build_context_synchronously
   void _handleNavigation(String route) {
-    Navigator.pushNamedAndRemoveUntil(
-        context, route, ModalRoute.withName(route));
+    if (route != '/admin') {
+      Navigator.pushNamedAndRemoveUntil(
+          context, route, ModalRoute.withName(route));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     // ignore: no_leading_underscores_for_local_identifiers
     final _formKey = GlobalKey<FormState>();
     final myPassword = TextEditingController();
@@ -96,8 +92,6 @@ class _MyHomePageState extends State<MyLoginPage> {
                         child: Container(
                           height: 50,
                           margin: const EdgeInsets.all(10.0),
-                          //alignment: const Alignment(0, 0),
-                          //color: Colors.blue,
                           child: TextFormField(
                             controller: myEmail,
                             validator: (value) {
@@ -118,8 +112,6 @@ class _MyHomePageState extends State<MyLoginPage> {
                         child: Container(
                           height: 50,
                           margin: const EdgeInsets.all(10.0),
-                          //alignment: const Alignment(0, 0),
-                          //color: Colors.blue,
                           child: TextFormField(
                             controller: myPassword,
                             validator: (value) {
@@ -140,15 +132,10 @@ class _MyHomePageState extends State<MyLoginPage> {
                         child: Container(
                           height: 30,
                           margin: const EdgeInsets.all(10.0),
-                          //alignment: const Alignment(0, 0),
-                          //color: Colors.blue,
                           child: ElevatedButton(
                             onPressed: () {
-                              // Validate returns true if the form is valid, or false otherwise.
                               // ignore: avoid_print
                               if (_formKey.currentState!.validate()) {
-                                // If the form is valid, display a snackbar. In the real world,
-                                // you'd often call a server or save the information in a database.
                                 login(myEmail.text, myPassword.text);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -169,7 +156,7 @@ class _MyHomePageState extends State<MyLoginPage> {
                   padding: const EdgeInsets.all(8.0),
                   alignment: const Alignment(0, 0),
                   child: Text(
-                      'Welcome to Municipal Messaging! An app to get direct messages from your city government. To begin, click Resident. Or if you\'re a government employee, click Municipality',
+                      'Welcome to Municipal Messaging! An app to get direct messages from your city government. To begin, click Resident. Or if you\'re a government employee, enter the provided municipal code. (get code)',
                       maxLines: 10,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -189,7 +176,7 @@ class _MyHomePageState extends State<MyLoginPage> {
                   //color: Colors.green,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.fromLTRB(60.0, 15.0, 60.0, 15.0)),
+                        padding: EdgeInsets.fromLTRB(64.0, 23.7, 64.0, 23.7)),
                     child: const Text('RESIDENT',
                         style: TextStyle(
                           fontSize: 15.0,
@@ -201,22 +188,26 @@ class _MyHomePageState extends State<MyLoginPage> {
                 ),
               ),
               ResponsiveGridCol(
-                xs: 6,
+                xs: 5,
                 md: 4,
                 child: Container(
-                  height: 80,
-                  alignment: const Alignment(0, 0),
-                  //color: Colors.orange,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0)),
-                    child: const Text('MUNICIPALITY',
-                        style: TextStyle(fontSize: 15.0)),
-                    onPressed: () {
-                      _handleNavigation('/municipality');
-                    },
-                  ),
-                ),
+                    height: 50,
+                    margin: const EdgeInsets.all(15.0),
+                    //color: Colors.orange,
+                    child: TextField(
+                        decoration: InputDecoration(
+                      fillColor: Colors.orange,
+                      filled: true,
+                      border: OutlineInputBorder(),
+                      hintText: 'MUNICIPAL CODE',
+                      hintStyle: TextStyle(fontSize: 13),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.send),
+                        onPressed: () {
+                          _handleNavigation('/admin');
+                        },
+                      ),
+                    ))),
               ),
               /**/
             ])));
