@@ -26,11 +26,11 @@ class MySignupPage extends StatefulWidget {
 
 class _MySignupPageState extends State<MySignupPage> {
   Future createUser(
-      credentials, String phone, String state, String city, String name) async {
-    // ignore: avoid_print
-    //print(credentials);
+      credentials, String phone, String state, String city, String name, String email) async {
+    String c = city.replaceAll(' ', '');
+    String s = state.replaceAll(' ', '');
     // ignore: unnecessary_brace_in_string_interps
-    String muni = '${city}_${state}';
+    String muni = '${c.toLowerCase()}_${s.toLowerCase()}';
     final u = FirebaseAuth.instance.currentUser;
     // ignore: avoid_print
     print(u?.uid);
@@ -41,7 +41,8 @@ class _MySignupPageState extends State<MySignupPage> {
       'uid': u?.uid,
       'municipality': muni,
       'phone': phone,
-      'name': name
+      'name': name,
+      'email': email
     });
     // ignore: avoid_print
     print(resp.data);
@@ -53,7 +54,7 @@ class _MySignupPageState extends State<MySignupPage> {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      createUser(userCredential, phone, state, city, name);
+      createUser(userCredential, phone, state, city, name, email);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
