@@ -1,7 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../getUserFromPreference.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -18,8 +16,8 @@ class _LandingState extends State<LandingPage> {
   }
 
   _loadUserInfo() async {
-    var user = await getMap();
-    // ignore: avoid_print
+    final state = LocalState();
+    var user = await state.getMap();
     if (user.isEmpty) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
@@ -36,16 +34,6 @@ class _LandingState extends State<LandingPage> {
               context, '/home', ModalRoute.withName('/home'));
         }
       }
-    }
-  }
-
-  static Future getMap() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? user = prefs.getString("USER");
-    if (user?.isNotEmpty == true) {
-      return jsonDecode(user ?? "") ?? {};
-    } else {
-      return "";
     }
   }
 

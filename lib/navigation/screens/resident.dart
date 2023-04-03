@@ -32,9 +32,6 @@ class _MySignupPageState extends State<MySignupPage> {
     // ignore: unnecessary_brace_in_string_interps
     String muni = '${c.toLowerCase()}_${s.toLowerCase()}';
     final u = FirebaseAuth.instance.currentUser;
-    // ignore: avoid_print
-    print(u?.uid);
-
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('residentLevel');
     final resp = await callable.call(<String, dynamic>{
@@ -42,11 +39,16 @@ class _MySignupPageState extends State<MySignupPage> {
       'municipality': muni,
       'phone': phone,
       'name': name,
-      'email': email
+      'email': email,
+      'deviceId': ''
     });
-    // ignore: avoid_print
-    print(resp.data);
-    // ignore: avoid_print
+
+    final isUser = FirebaseAuth.instance.currentUser;
+    if(resp.data != null && isUser != null){
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/home', ModalRoute.withName('/home'));
+      }
   }
 
   Future submit(String email, String password, String phone, String state,
@@ -253,8 +255,6 @@ class _MySignupPageState extends State<MySignupPage> {
                           //color: Colors.blue,
                           child: ElevatedButton(
                             onPressed: () {
-                              // Validate returns true if the form is valid, or false otherwise.
-                              // ignore: avoid_print
                               if (_formKey.currentState!.validate()) {
                                 // If the form is valid, display a snackbar. In the real world,
                                 // you'd often call a server or save the information in a database.

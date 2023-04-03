@@ -42,7 +42,6 @@ class _MyHomePageState extends State<MyLoginPage> {
         FirebaseFunctions.instance.httpsCallable('getCustomClaim');
     final resp = await callable.call(<String, dynamic>{'uid': isAuth});
     var d = resp.data;
-    //ignore: avoid_print
     if (d["admin"] == false) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(

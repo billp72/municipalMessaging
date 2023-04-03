@@ -213,8 +213,6 @@ class _MySignupPageState extends State<MySignupPage> {
                           //color: Colors.blue,
                           child: ElevatedButton(
                             onPressed: () {
-                              // Validate returns true if the form is valid, or false otherwise.
-                              // ignore: avoid_print
                               if (_formKey.currentState!.validate()) {
                                 // If the form is valid, display a snackbar. In the real world,
                                 // you'd often call a server or save the information in a database.

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../getUserFromPreference.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -15,7 +16,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _username = "";
+  final state = LocalState();
+  String _username = '';
+
 
   @override
   void initState() {
@@ -24,8 +27,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _loadUserInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _username = (prefs.getString('USER') ?? "");
+    _username = await state.getMap();
+    if(_username.isNotEmpty){
+      print('$_username is home user');
+    }
   }
 
   void _handleLogout() async {
@@ -46,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Welcome  $_username . This is the home screen'),
+            const Text('Welcome This is the home screen'),
             ElevatedButton(
               onPressed: _handleLogout,
               child: const Text("Logout"),
