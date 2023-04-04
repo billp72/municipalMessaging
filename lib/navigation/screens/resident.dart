@@ -11,9 +11,29 @@ class Resident extends StatelessWidget {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: const Text('Municipal Message - Sign up'),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+            icon: const Icon(Icons.home_outlined),
+          ),
+          title: const Text('Sign up'),
         ),
-        body: const SingleChildScrollView(child: MySignupPage(title: '')));
+        body: Stack(children:<Widget>[
+          Container(
+            decoration: BoxDecoration(
+            image: DecorationImage(
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.20), BlendMode.dstATop),
+            image: const AssetImage('assets/images/gov.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+          ),
+          const Align(
+            alignment: Alignment.topRight,
+            child: SingleChildScrollView(child: MySignupPage(title: ''))
+          )]));
   }
 }
 
@@ -27,6 +47,12 @@ class MySignupPage extends StatefulWidget {
 }
 
 class _MySignupPageState extends State<MySignupPage> {
+  FocusNode inputNode = FocusNode();
+// to open keyboard call this function;
+  void openKeyboard() {
+    FocusScope.of(context).requestFocus(inputNode);
+  }
+
   Future createUser(credentials, String phone, String state, String city,
       String name, String email) async {
     String c = city.replaceAll(' ', '');
@@ -74,8 +100,9 @@ class _MySignupPageState extends State<MySignupPage> {
 
   @override
   Widget build(BuildContext context) {
+   
     // ignore: no_leading_underscores_for_local_identifiers
-    final _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final myPassword = TextEditingController();
     final myEmail = TextEditingController();
     final name = TextEditingController();
@@ -107,6 +134,8 @@ class _MySignupPageState extends State<MySignupPage> {
                       //color: Colors.blue,
                       child: TextFormField(
                         controller: name,
+                        focusNode: inputNode,
+                        autofocus: true,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Name (optional)',

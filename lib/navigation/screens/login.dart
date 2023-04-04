@@ -10,10 +10,31 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: const Text('Municipal Messageing'),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+            icon: const Icon(Icons.home_outlined),
+          ),
+          title: const Text('Sign up'),
         ),
-        body: const MyLoginPage(title: ''));
+        body: Stack(children:<Widget>[
+          Container(
+            decoration: BoxDecoration(
+            image: DecorationImage(
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.20), BlendMode.dstATop),
+            image: const AssetImage('assets/images/gov.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+          ),
+          const Align(
+            alignment: Alignment.topRight,
+            child: SingleChildScrollView(child: MyLoginPage(title: ''))
+          )]));
   }
 }
 
