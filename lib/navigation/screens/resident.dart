@@ -25,8 +25,8 @@ class MySignupPage extends StatefulWidget {
 }
 
 class _MySignupPageState extends State<MySignupPage> {
-  Future createUser(
-      credentials, String phone, String state, String city, String name, String email) async {
+  Future createUser(credentials, String phone, String state, String city,
+      String name, String email) async {
     String c = city.replaceAll(' ', '');
     String s = state.replaceAll(' ', '');
     // ignore: unnecessary_brace_in_string_interps
@@ -36,6 +36,8 @@ class _MySignupPageState extends State<MySignupPage> {
         FirebaseFunctions.instance.httpsCallable('residentLevel');
     final resp = await callable.call(<String, dynamic>{
       'uid': u?.uid,
+      'city': city,
+      'state': state,
       'municipality': muni,
       'phone': phone,
       'name': name,
@@ -44,11 +46,11 @@ class _MySignupPageState extends State<MySignupPage> {
     });
 
     final isUser = FirebaseAuth.instance.currentUser;
-    if(resp.data != null && isUser != null){
+    if (resp.data != null && isUser != null) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
           context, '/home', ModalRoute.withName('/home'));
-      }
+    }
   }
 
   Future submit(String email, String password, String phone, String state,

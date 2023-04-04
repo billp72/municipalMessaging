@@ -1,3 +1,5 @@
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
@@ -23,8 +25,50 @@ class MySignupPage extends StatefulWidget {
 }
 
 class _MySignupPageState extends State<MySignupPage> {
+  Future createUser(credentials, String phone, String state, String city,
+      String name, String email) async {
+    String c = city.replaceAll(' ', '');
+    String s = state.replaceAll(' ', '');
+    // ignore: unnecessary_brace_in_string_interps
+    String muni = '${c.toLowerCase()}_${s.toLowerCase()}';
+    final u = FirebaseAuth.instance.currentUser;
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('adminLevel');
+    final resp = await callable.call(<String, dynamic>{
+      'uid': u?.uid,
+      'city': city,
+      'state': state,
+      'municipality': muni,
+      'phone': phone,
+      'name': name,
+      'email': email,
+      'deviceId': ''
+    });
+
+    final isUser = FirebaseAuth.instance.currentUser;
+    if (resp.data != null && isUser != null) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/home', ModalRoute.withName('/home'));
+    }
+  }
+
   Future submit(String email, String password, String phone, String state,
-      String city, String name) async {}
+      String city, String name) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      createUser(userCredential, phone, state, city, name, email);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +83,7 @@ class _MySignupPageState extends State<MySignupPage> {
     final remyPassword = TextEditingController();
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Municipality Sign up'),
+          title: const Text('Municipal Message - Sign up'),
         ),
         body: Container(
             decoration: BoxDecoration(
