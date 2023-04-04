@@ -104,16 +104,7 @@ class _MySignupPageState extends State<MySignupPage> {
     final phone = TextEditingController();
     final remyPassword = TextEditingController();
 
-    return Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.20), BlendMode.dstATop),
-            image: const AssetImage('assets/images/gov.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: ResponsiveGridRow(children: [
+    return ResponsiveGridRow(children: [
           ResponsiveGridCol(
             xs: 12,
             child: Form(
@@ -296,6 +287,6 @@ class _MySignupPageState extends State<MySignupPage> {
                 ])),
           ),
           /**/
-        ]));
+        ]);
   }
 }
