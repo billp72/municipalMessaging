@@ -9,10 +9,11 @@ class Resident extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text('Municipal Message - Sign up'),
         ),
-        body: const MySignupPage(title: ''));
+        body: const SingleChildScrollView(child: MySignupPage(title: '')));
   }
 }
 

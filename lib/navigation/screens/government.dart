@@ -9,10 +9,11 @@ class Government extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text('Government sign up'),
         ),
-        body: const MySignupPage(title: ''));
+        body: const SingleChildScrollView(child: MySignupPage(title: '')));
   }
 }
 
