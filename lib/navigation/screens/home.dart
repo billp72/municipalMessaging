@@ -8,29 +8,19 @@ class MyHomePage extends StatefulWidget {
 
   final String title;
 
-  // ignore: library_private_types_in_public_api
   @override
-  // ignore: library_private_types_in_public_api
-  // ignore: no_logic_in_create_state, library_private_types_in_public_api
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   final state = LocalState();
-  String _username = '';
-
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserInfo();
-  }
+  dynamic _username;
 
   _loadUserInfo() async {
     _username = await state.getMap();
-    if(_username.isNotEmpty){
-      print('$_username is home user');
-    }
+    //if (_username.isNotEmpty) {
+    print('$_username is home user');
+    //}
   }
 
   void _handleLogout() async {
@@ -44,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _loadUserInfo();
     return Scaffold(
         appBar: AppBar(
           title: const Text("Home"),

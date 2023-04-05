@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
@@ -58,17 +60,23 @@ class MyLoginPage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyLoginPage> {
   Future login(String email, String password) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final AuthServices auth = AuthServices();
     final isAuth = await auth.signInWithEmailAndPassword(email, password);
-    HttpsCallable callable =
+    final HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('getCustomClaim');
     final resp = await callable.call(<String, dynamic>{'uid': isAuth});
-    var d = resp.data;
-    if (d["admin"] == false) {
+
+    var data = resp.data;
+    data["uid"] = isAuth;
+    String json = jsonEncode(data);
+    prefs.setString("USER", json);
+
+    if (data["admin"] == false) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
           context, '/home', ModalRoute.withName('/home'));
-    } else if (d["admin"] == true) {
+    } else if (data["admin"] == true) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
           context, '/admin', ModalRoute.withName('/admin'));

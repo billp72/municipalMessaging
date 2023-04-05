@@ -11,12 +11,12 @@ class AuthServices {
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('getCustomClaim');
     final resp = await callable.call(<String, dynamic>{'uid': user.uid});
-    if (resp.data) {
-      resp.data["uid"] = user.uid;
-      resp.data["displayName"] = user?.displayName;
-      resp.data["email"] = user?.email;
-      resp.data["phoneNumber"] = user?.phoneNumber;
-      prefs.setString("USER", jsonEncode(resp.data));
+    var data = resp.data;
+    if (data != null) {
+      data["uid"] = user["uid"];
+      data["email"] = user["email"];
+      String json = jsonEncode(data);
+      prefs.setString("USER", json);
     }
   }
 

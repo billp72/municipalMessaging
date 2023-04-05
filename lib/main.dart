@@ -31,7 +31,9 @@ Future<void> main() async {
     if (user == null) {
       prefs.clear();
     } else {
-      auth.getCustomClaims(user, prefs);
+      if (user.uid.isNotEmpty) {
+        auth.getCustomClaims(user, prefs);
+      }
     }
   });
   runApp(const MyApp());
