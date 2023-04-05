@@ -60,11 +60,12 @@ class MyLoginPage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyLoginPage> {
   Future login(String email, String password) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final AuthServices auth = AuthServices();
-    final isAuth = await auth.signInWithEmailAndPassword(email, password);
     final HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('getCustomClaim');
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final isAuth = await auth.signInWithEmailAndPassword(email, password);
     final resp = await callable.call(<String, dynamic>{'uid': isAuth});
 
     var data = resp.data;
@@ -72,12 +73,14 @@ class _MyHomePageState extends State<MyLoginPage> {
     String json = jsonEncode(data);
     prefs.setString("USER", json);
 
+    _loginRoute(data);
+  }
+
+  void _loginRoute(data) {
     if (data["admin"] == false) {
-      // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
           context, '/home', ModalRoute.withName('/home'));
     } else if (data["admin"] == true) {
-      // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
           context, '/admin', ModalRoute.withName('/admin'));
     }
