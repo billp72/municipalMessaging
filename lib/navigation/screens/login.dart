@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyLoginPage> {
       prefs.setString("USER", json);
 
       _loginRoute(data);
-      return '';
+      return 'Processing request';
     } else {
       return 'Log in failed';
     }
@@ -163,8 +163,8 @@ class _MyHomePageState extends State<MyLoginPage> {
                     onPressed: () async {
                       // ignore: avoid_print
                       if (_formKey.currentState!.validate()) {
-                        var r = await login(myEmail.text, myPassword.text);
-                        String text = r ?? 'processing data';
+                        String text =
+                            await login(myEmail.text, myPassword.text);
                         // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(text)),
