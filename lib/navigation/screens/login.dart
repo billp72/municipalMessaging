@@ -70,7 +70,9 @@ class _MyHomePageState extends State<MyLoginPage> {
 
     var data = resp.data;
     data["uid"] = isAuth;
+
     String json = jsonEncode(data);
+
     prefs.setString("USER", json);
 
     _loginRoute(data);
