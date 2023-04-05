@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthServices {
   final _auth = FirebaseAuth.instance;
-  HttpsCallable? myrole;
 
   Future getCustomClaims(user, prefs) async {
     HttpsCallable callable =

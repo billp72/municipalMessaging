@@ -66,16 +66,22 @@ class _MyHomePageState extends State<MyLoginPage> {
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final isAuth = await auth.signInWithEmailAndPassword(email, password);
-    final resp = await callable.call(<String, dynamic>{'uid': isAuth});
+    // ignore: avoid_print
+    if (isAuth != null) {
+      final resp = await callable.call(<String, dynamic>{'uid': isAuth});
 
-    var data = resp.data;
-    data["uid"] = isAuth;
+      var data = resp.data;
+      data["uid"] = isAuth;
 
-    String json = jsonEncode(data);
+      String json = jsonEncode(data);
 
-    prefs.setString("USER", json);
+      prefs.setString("USER", json);
 
-    _loginRoute(data);
+      _loginRoute(data);
+      return '';
+    } else {
+      return 'Log in failed';
+    }
   }
 
   void _loginRoute(data) {
@@ -154,12 +160,14 @@ class _MyHomePageState extends State<MyLoginPage> {
                   height: 30,
                   margin: const EdgeInsets.all(10.0),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // ignore: avoid_print
                       if (_formKey.currentState!.validate()) {
-                        login(myEmail.text, myPassword.text);
+                        var r = await login(myEmail.text, myPassword.text);
+                        String text = r ?? 'processing data';
+                        // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
+                          SnackBar(content: Text(text)),
                         );
                       }
                     },
