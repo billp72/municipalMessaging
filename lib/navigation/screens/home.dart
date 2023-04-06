@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../getUserFromPreference.dart';
 import '../flexList/listItem.dart';
+import 'createAlert.dart';
 import 'detailScreen.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -17,10 +18,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final state = LocalState();
   final items = List<ListItem>.generate(
-  100,
-  (i) => i == 0
-      ? HeadingItem('Municipal Alerts $i')
-      : MessageItem('Event $i', 'Will receive public events $i'),
+    100,
+    (i) => i == 0
+        ? HeadingItem('Click to add an alert')
+        : MessageItem('Event $i', 'Will receive public events $i'),
   );
   dynamic _username;
 
@@ -40,6 +41,24 @@ class _MyHomePageState extends State<MyHomePage> {
         context, '/login', ModalRoute.withName('/login'));
   }
 
+  void _selectPage(items, int index) {
+    if (index > 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyDetailPage(alert: items[index]),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MyCreateAlert(),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _loadUserInfo();
@@ -54,28 +73,21 @@ class _MyHomePageState extends State<MyHomePage> {
           title: const Text("Home"),
         ),
         body: ListView.builder(
-              // Let the ListView know how many items it needs to build.
-                itemCount: items.length,
-                // Provide a builder function. This is where the magic happens.
-                // Convert each item into a widget based on the type of item it is.
-                itemBuilder: (context, index) {
-                final item = items[index];
+          // Let the ListView know how many items it needs to build.
+          itemCount: items.length,
+          // Provide a builder function. This is where the magic happens.
+          // Convert each item into a widget based on the type of item it is.
+          itemBuilder: (context, index) {
+            final item = items[index];
 
-                return ListTile(
-                  title: item.buildTitle(context),
-                  subtitle: item.buildSubtitle(context),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyDetailPage(alert: items[index]),
-                      ),
-                    );
-                  },
-                );
+            return ListTile(
+              title: item.buildTitle(context),
+              subtitle: item.buildSubtitle(context),
+              onTap: () {
+                _selectPage(items, index);
               },
-            )
-          //],
-        );
+            );
+          },
+        ));
   }
 }

@@ -16,12 +16,7 @@ class HeadingItem implements ListItem {
 
   @override
   Widget buildTitle(BuildContext context) {
-    return Text(
-      heading,
-      style: 
-        Theme.of(context).textTheme
-        .headlineSmall
-    );
+    return Text(heading, style: Theme.of(context).textTheme.headlineSmall);
   }
 
   @override
@@ -35,9 +30,10 @@ class MessageItem implements ListItem {
   MessageItem(this.sender, this.body);
 
   @override
-  Widget buildTitle(BuildContext context) => Text(sender, style: const TextStyle(
-                color: Colors.blue,
-              ));
+  Widget buildTitle(BuildContext context) => Text(sender,
+      style: const TextStyle(
+        color: Colors.blue,
+      ));
 
   @override
   Widget buildSubtitle(BuildContext context) => Text(body);
