@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../getUserFromPreference.dart';
+import '../flexList/listItem.dart';
+import 'detailScreen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -14,6 +16,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final state = LocalState();
+  final items = List<ListItem>.generate(
+  100,
+  (i) => i == 0
+      ? HeadingItem('Municipal Alerts $i')
+      : MessageItem('Event $i', 'Will receive public events $i'),
+  );
   dynamic _username;
 
   _loadUserInfo() async {
@@ -37,17 +45,37 @@ class _MyHomePageState extends State<MyHomePage> {
     _loadUserInfo();
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              _handleLogout();
+            },
+            icon: const Icon(Icons.home_outlined),
+          ),
           title: const Text("Home"),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('Welcome This is the home screen'),
-            ElevatedButton(
-              onPressed: _handleLogout,
-              child: const Text("Logout"),
+        body: ListView.builder(
+              // Let the ListView know how many items it needs to build.
+                itemCount: items.length,
+                // Provide a builder function. This is where the magic happens.
+                // Convert each item into a widget based on the type of item it is.
+                itemBuilder: (context, index) {
+                final item = items[index];
+
+                return ListTile(
+                  title: item.buildTitle(context),
+                  subtitle: item.buildSubtitle(context),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyDetailPage(alert: items[index]),
+                      ),
+                    );
+                  },
+                );
+              },
             )
-          ],
-        ));
+          //],
+        );
   }
 }

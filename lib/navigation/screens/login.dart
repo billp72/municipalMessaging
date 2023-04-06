@@ -14,13 +14,7 @@ class Login extends StatelessWidget {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-            icon: const Icon(Icons.home_outlined),
-          ),
-          title: const Text('Sign up'),
+          title: const Text('Login or Sign up'),
         ),
         body: Stack(children: <Widget>[
           Container(
