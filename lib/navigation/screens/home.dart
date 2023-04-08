@@ -17,19 +17,22 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final state = LocalState();
-  final items = List<ListItem>.generate(
+  
+  dynamic _username;
+
+  Future _loadUserInfo() async {
+    _username = await state.getMap();
+    final items = List<ListItem>.generate(
     100,
     (i) => i == 0
         ? HeadingItem('Click to add an alert')
         : MessageItem('Event $i', 'Will receive public events $i'),
-  );
-  dynamic _username;
-
-  _loadUserInfo() async {
-    _username = await state.getMap();
+    );
     //if (_username.isNotEmpty) {
+    // ignore: avoid_print
     print('$_username is home user');
     //}
+    return items;
   }
 
   void _handleLogout() async {
@@ -41,12 +44,12 @@ class _MyHomePageState extends State<MyHomePage> {
         context, '/login', ModalRoute.withName('/login'));
   }
 
-  void _selectPage(items, int index) {
+  void _selectPage(item, int index) {
     if (index > 0) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => MyDetailPage(alert: items[index]),
+          builder: (context) => MyDetailPage(alert: item),
         ),
       );
     } else {
@@ -61,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _loadUserInfo();
+    
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -72,22 +75,34 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           title: const Text("Home"),
         ),
-        body: ListView.builder(
-          // Let the ListView know how many items it needs to build.
-          itemCount: items.length,
-          // Provide a builder function. This is where the magic happens.
-          // Convert each item into a widget based on the type of item it is.
-          itemBuilder: (context, index) {
-            final item = items[index];
+        body: FutureBuilder(
+          builder: (context, alertSnap){
+              if (alertSnap.connectionState == ConnectionState.none &&
+                  !alertSnap.hasData) {
+                return Container();
+              }else if(alertSnap.connectionState == ConnectionState.waiting &&
+                  !alertSnap.hasData){
+                return const Center(child: CircularProgressIndicator());
+              }
+              return ListView.builder(
+              // Let the ListView know how many items it needs to build.
+              itemCount: alertSnap.data?.length,
+              // Provide a builder function. This is where the magic happens.
+              // Convert each item into a widget based on the type of item it is.
+              itemBuilder: (context, index) {
+                final item = alertSnap.data?[index];
 
-            return ListTile(
-              title: item.buildTitle(context),
-              subtitle: item.buildSubtitle(context),
-              onTap: () {
-                _selectPage(items, index);
+                return ListTile(
+                  title: item.buildTitle(context),
+                  subtitle: item.buildSubtitle(context),
+                  onTap: () {
+                    _selectPage(item, index);
+                  },
+                );
               },
             );
           },
-        ));
+        future: _loadUserInfo()
+      ));
   }
 }
