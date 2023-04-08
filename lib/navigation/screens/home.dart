@@ -26,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return i == 0
         ? HeadingItem('Click to add an alert')
         : MessageItem('Subscribed to: ${data[i]["type"].toUpperCase()}',
-            'Recieve: ${data[i]["frequency"]} messages. Created on ${data[i]["date"]["_seconds"]}');
+            'Recieve: ${data[i]["frequency"]} messages. Last sent ${data[i]["date"]["_seconds"]}');
   }
 
   Future _loadUserInfo() async {
