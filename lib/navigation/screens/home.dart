@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,21 +18,25 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final state = LocalState();
-  
+  final HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('getUserAlerts');
   dynamic _username;
+
+  _formatListTypes(int i, data) {
+    return i == 0
+        ? HeadingItem('Click to add an alert')
+        : MessageItem('Subscribed to: ${data[i]["type"].toUpperCase()}',
+            'Recieve: ${data[i]["frequency"]} messages. Created on ${data[i]["date"]["_seconds"]}');
+  }
 
   Future _loadUserInfo() async {
     _username = await state.getMap();
-    final items = List<ListItem>.generate(
-    100,
-    (i) => i == 0
-        ? HeadingItem('Click to add an alert')
-        : MessageItem('Event $i', 'Will receive public events $i'),
-    );
-    //if (_username.isNotEmpty) {
-    // ignore: avoid_print
-    print('$_username is home user');
-    //}
+    final resp =
+        await callable.call(<String, dynamic>{'uid': _username['uid']});
+    final data = resp.data;
+    final items =
+        List<ListItem>.generate(data.length, (i) => _formatListTypes(i, data));
+
     return items;
   }
 
@@ -64,7 +69,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -76,33 +80,32 @@ class _MyHomePageState extends State<MyHomePage> {
           title: const Text("Home"),
         ),
         body: FutureBuilder(
-          builder: (context, alertSnap){
+            builder: (context, alertSnap) {
               if (alertSnap.connectionState == ConnectionState.none &&
                   !alertSnap.hasData) {
                 return Container();
-              }else if(alertSnap.connectionState == ConnectionState.waiting &&
-                  !alertSnap.hasData){
+              } else if (alertSnap.connectionState == ConnectionState.waiting &&
+                  !alertSnap.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
               return ListView.builder(
-              // Let the ListView know how many items it needs to build.
-              itemCount: alertSnap.data?.length,
-              // Provide a builder function. This is where the magic happens.
-              // Convert each item into a widget based on the type of item it is.
-              itemBuilder: (context, index) {
-                final item = alertSnap.data?[index];
+                // Let the ListView know how many items it needs to build.
+                itemCount: alertSnap.data?.length,
+                // Provide a builder function. This is where the magic happens.
+                // Convert each item into a widget based on the type of item it is.
+                itemBuilder: (context, index) {
+                  final item = alertSnap.data?[index];
 
-                return ListTile(
-                  title: item.buildTitle(context),
-                  subtitle: item.buildSubtitle(context),
-                  onTap: () {
-                    _selectPage(item, index);
-                  },
-                );
-              },
-            );
-          },
-        future: _loadUserInfo()
-      ));
+                  return ListTile(
+                    title: item.buildTitle(context),
+                    subtitle: item.buildSubtitle(context),
+                    onTap: () {
+                      _selectPage(item, index);
+                    },
+                  );
+                },
+              );
+            },
+            future: _loadUserInfo()));
   }
 }
