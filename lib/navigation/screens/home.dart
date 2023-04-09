@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             icon: const Icon(Icons.home_outlined),
           ),
-          title: const Text("Home"),
+          title: const Text("Alarm List"),
         ),
         body: FutureBuilder(
             builder: (context, alertSnap) {
