@@ -83,18 +83,23 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context, alertSnap) {
               if (!alertSnap.hasData || alertSnap.data.length == 0) {
                 return Center(
-                    heightFactor: 20,
-                    widthFactor: 20,
-                    child: IconButton(
-                        iconSize: 150,
-                        icon: const Icon(
-                          Icons.add_alarm_rounded,
-                          color: Colors.green,
-                          size: 150.0,
-                        ),
-                        onPressed: () {
-                          _selectPage({}, 0);
-                        }));
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                      IconButton(
+                          iconSize: 150,
+                          icon: const Icon(
+                            Icons.add_alarm_rounded,
+                            color: Colors.green,
+                            size: 150.0,
+                          ),
+                          onPressed: () {
+                            _selectPage({}, 0);
+                          }),
+                      const Text(
+                        "Click to add alarm",
+                      )
+                    ]));
               } else if (alertSnap.connectionState == ConnectionState.waiting &&
                   !alertSnap.hasData) {
                 return const Center(child: CircularProgressIndicator());
