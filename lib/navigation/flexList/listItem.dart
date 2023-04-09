@@ -16,7 +16,10 @@ class HeadingItem implements ListItem {
 
   @override
   Widget buildTitle(BuildContext context) {
-    return Text(heading, style: Theme.of(context).textTheme.headlineSmall);
+    return Text(heading, style: const TextStyle(
+        fontSize: 24,
+        color: Colors.red,
+    ));
   }
 
   @override
