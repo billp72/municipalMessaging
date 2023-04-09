@@ -83,7 +83,16 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context, alertSnap) {
               if (alertSnap.connectionState == ConnectionState.none &&
                   !alertSnap.hasData) {
-                return Container();
+                return Center(
+                    child: IconButton(
+                        icon: const Icon(
+                          Icons.add_alarm_rounded,
+                          color: Colors.green,
+                          size: 40.0,
+                        ),
+                        onPressed: () {
+                          _selectPage({}, 0);
+                        }));
               } else if (alertSnap.connectionState == ConnectionState.waiting &&
                   !alertSnap.hasData) {
                 return const Center(child: CircularProgressIndicator());
