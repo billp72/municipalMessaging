@@ -81,14 +81,16 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: FutureBuilder(
             builder: (context, alertSnap) {
-              if (alertSnap.connectionState == ConnectionState.none &&
-                  !alertSnap.hasData) {
+              if (!alertSnap.hasData || alertSnap.data.length == 0) {
                 return Center(
+                    heightFactor: 20,
+                    widthFactor: 20,
                     child: IconButton(
+                        iconSize: 100,
                         icon: const Icon(
                           Icons.add_alarm_rounded,
                           color: Colors.green,
-                          size: 40.0,
+                          size: 100.0,
                         ),
                         onPressed: () {
                           _selectPage({}, 0);
