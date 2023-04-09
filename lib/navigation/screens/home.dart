@@ -86,11 +86,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     heightFactor: 20,
                     widthFactor: 20,
                     child: IconButton(
-                        iconSize: 100,
+                        iconSize: 150,
                         icon: const Icon(
                           Icons.add_alarm_rounded,
                           color: Colors.green,
-                          size: 100.0,
+                          size: 150.0,
                         ),
                         onPressed: () {
                           _selectPage({}, 0);
