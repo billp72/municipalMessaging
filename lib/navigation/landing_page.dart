@@ -17,7 +17,7 @@ class _LandingState extends State<LandingPage> {
 
   _loadUserInfo() async {
     final state = LocalState();
-    var user = await state.getMap();
+    var user = await state.getMap('USER');
     if (user.isEmpty) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(

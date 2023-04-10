@@ -30,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future _loadUserInfo() async {
-    _username = await state.getMap();
+    _username = await state.getMap("USER");
     final resp =
         await callable.call(<String, dynamic>{'uid': _username['uid']});
     final data = resp.data;

@@ -29,7 +29,7 @@ Future<void> main() async {
 
   authenticate.authStateChanges().listen((User? user) {
     if (user == null) {
-      prefs.remove("USER");
+      prefs.clear();
     } else {
       if (user.uid.isNotEmpty) {
         auth.getCustomClaims(user, prefs);
