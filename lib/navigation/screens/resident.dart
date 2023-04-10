@@ -1,7 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../dropdownMenu/dropdownmenu.dart';
 import '../../getUserFromPreference.dart';
 
@@ -50,6 +53,7 @@ class MySignupPage extends StatefulWidget {
 
 class _MySignupPageState extends State<MySignupPage> {
   FocusNode inputNode = FocusNode();
+
 // to open keyboard call this function;
   void openKeyboard() {
     FocusScope.of(context).requestFocus(inputNode);
@@ -64,6 +68,8 @@ class _MySignupPageState extends State<MySignupPage> {
     final u = FirebaseAuth.instance.currentUser;
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('residentLevel');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final isUser = FirebaseAuth.instance.currentUser;
     final resp = await callable.call(<String, dynamic>{
       'uid': u?.uid,
       'city': city,
@@ -74,8 +80,8 @@ class _MySignupPageState extends State<MySignupPage> {
       'email': email,
       'deviceId': ''
     });
-
-    final isUser = FirebaseAuth.instance.currentUser;
+    prefs.remove("CITY");
+    prefs.remove("STATE");
     if (resp.data != null && isUser != null) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
@@ -88,17 +94,31 @@ class _MySignupPageState extends State<MySignupPage> {
     try {
       final local = LocalState();
       final state = await local.getDropdown('STATE');
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      createUser(userCredential, phone, state, city, name, email);
+      final city = await local.getDropdown('CITY');
+
+      if (city?.toString().isNotEmpty == true &&
+          state?.toString().isNotEmpty == true) {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+        createUser(userCredential, phone, state, city, name, email);
+      } else {
+        throw Exception('Select city and state');
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('The password provided is too weak.')),
+        );
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('The account already exists for that email.')),
+        );
       }
     } catch (e) {
-      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$e')),
+      );
     }
   }
 
@@ -150,24 +170,11 @@ class _MySignupPageState extends State<MySignupPage> {
               ResponsiveGridCol(
                 xs: 12,
                 child: Container(
-                  height: 50,
-                  margin: const EdgeInsets.all(10.0),
-                  //alignment: const Alignment(0, 0),
-                  //color: Colors.blue,
-                  child: TextFormField(
-                    controller: city,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'City',
-                    ),
-                  ),
-                ),
+                    height: 50,
+                    margin: const EdgeInsets.all(10.0),
+                    //alignment: const Alignment(0, 0),
+                    //color: Colors.blue,
+                    child: const MyDropdown(selected: "CITY")),
               ),
               ResponsiveGridCol(
                 xs: 12,
