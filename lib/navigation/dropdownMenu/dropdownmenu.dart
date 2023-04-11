@@ -1,31 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class MyDropdown extends StatefulWidget {
-  const MyDropdown({Key? key, required this.selected}) : super(key: key);
   // ignore: prefer_typing_uninitialized_variables
+  final Function(String, String) onSelectedValueChange;
+
+  // ignore: prefer_typing_uninitialized_variables
+  final drop;
+
+  const MyDropdown(
+      {Key? key,
+      required this.selected,
+      required this.drop,
+      required this.onSelectedValueChange})
+      : super(key: key);
 
   final String selected;
+
   @override
   // ignore: library_private_types_in_public_api, no_logic_in_create_state
   _MyDropdownState createState() =>
+
       // ignore: no_logic_in_create_state
-      _MyDropdownState(selected);
+      _MyDropdownState(selected, drop, onSelectedValueChange);
 }
 
 class _MyDropdownState extends State<MyDropdown> {
   final String selected;
+  final Function(String, String) onSelectedValueChange;
 
-  _MyDropdownState(this.selected);
+  // ignore: prefer_typing_uninitialized_variables
+  final drop;
 
-  String initialselection = "Select";
-  final _myController = TextEditingController();
+  _MyDropdownState(this.selected, this.drop, this.onSelectedValueChange);
 
   List<String> createDdArray() {
     List<String> thearray = [];
-    if (selected == "STATE") {
+    if (selected == "state") {
       thearray = [
-        'Select',
+        'Select $selected',
         'Maine',
         'New Hamshire',
         'New York',
@@ -33,35 +46,22 @@ class _MyDropdownState extends State<MyDropdown> {
         'Pennsylvyania'
       ];
     } else {
-      thearray = ["Select", "Lisbon", "Portland"];
+      thearray = ['Select $selected', 'Lisbon', 'Portland'];
     }
     return thearray;
   }
 
   @override
-  void dispose() {
-    _myController.dispose();
-    super.dispose();
-  }
-
-  // ignore: no_leading_underscores_for_local_identifiers
-  void _setSelectedValue(String value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(selected, value);
-    setState(() {
-      initialselection = value;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: initialselection,
+      value: drop[selected],
       onChanged: (String? value) {
-        _setSelectedValue(value!);
+        setState(() {
+          onSelectedValueChange(value!, selected);
+        });
       },
       validator: (value) {
-        if (value == null || value == "Select") {
+        if (value == null || value == 'Select $selected') {
           return 'Please select an option';
         }
         return null;

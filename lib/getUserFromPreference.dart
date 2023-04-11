@@ -13,9 +13,4 @@ class LocalState {
       return "";
     }
   }
-
-  Future getDropdown(String type) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(type);
-  }
 }

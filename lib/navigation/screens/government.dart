@@ -2,6 +2,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
+import '../dropdownMenu/dropdownmenu.dart';
 
 class Government extends StatelessWidget {
   const Government({Key? key, required this.title}) : super(key: key);
@@ -47,10 +48,16 @@ class MySignupPage extends StatefulWidget {
 }
 
 class _MySignupPageState extends State<MySignupPage> {
+  final dropdowns = {'state': 'Select state'};
+
   FocusNode inputNode = FocusNode();
 // to open keyboard call this function;
   void openKeyboard() {
     FocusScope.of(context).requestFocus(inputNode);
+  }
+
+  void _setSelectedValue(String value, String type) async {
+    dropdowns[type] = value;
   }
 
   Future createUser(credentials, String phone, String state, String city,
@@ -106,7 +113,6 @@ class _MySignupPageState extends State<MySignupPage> {
     final myEmail = TextEditingController();
     final name = TextEditingController();
     final city = TextEditingController();
-    final state = TextEditingController();
     final phone = TextEditingController();
     final remyPassword = TextEditingController();
     return ResponsiveGridRow(children: [
@@ -136,6 +142,18 @@ class _MySignupPageState extends State<MySignupPage> {
               ResponsiveGridCol(
                 xs: 12,
                 child: Container(
+                    height: 50,
+                    margin: const EdgeInsets.all(10.0),
+                    //alignment: const Alignment(0, 0),
+                    //color: Colors.blue,
+                    child: MyDropdown(
+                        selected: "state",
+                        drop: dropdowns,
+                        onSelectedValueChange: _setSelectedValue)),
+              ),
+              ResponsiveGridCol(
+                xs: 12,
+                child: Container(
                   height: 50,
                   margin: const EdgeInsets.all(10.0),
                   //alignment: const Alignment(0, 0),
@@ -151,28 +169,6 @@ class _MySignupPageState extends State<MySignupPage> {
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'City',
-                    ),
-                  ),
-                ),
-              ),
-              ResponsiveGridCol(
-                xs: 12,
-                child: Container(
-                  height: 50,
-                  margin: const EdgeInsets.all(10.0),
-                  //alignment: const Alignment(0, 0),
-                  //color: Colors.blue,
-                  child: TextFormField(
-                    controller: state,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'State',
                     ),
                   ),
                 ),
@@ -279,7 +275,7 @@ class _MySignupPageState extends State<MySignupPage> {
                         // you'd often call a server or save the information in a database.
                         if (myPassword.text == remyPassword.text) {
                           submit(myEmail.text, myPassword.text, phone.text,
-                              state.text, city.text, name.text);
+                              dropdowns["state"]!, city.text, name.text);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Processing Data')),
                           );

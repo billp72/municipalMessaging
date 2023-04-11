@@ -1,12 +1,8 @@
-// ignore_for_file: avoid_print
-
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../dropdownMenu/dropdownmenu.dart';
-import '../../getUserFromPreference.dart';
 
 class Resident extends StatelessWidget {
   const Resident({Key? key, required this.title}) : super(key: key);
@@ -52,6 +48,8 @@ class MySignupPage extends StatefulWidget {
 }
 
 class _MySignupPageState extends State<MySignupPage> {
+  final dropdowns = {'state': 'Select state', 'city': 'Select city'};
+
   FocusNode inputNode = FocusNode();
 
 // to open keyboard call this function;
@@ -59,8 +57,12 @@ class _MySignupPageState extends State<MySignupPage> {
     FocusScope.of(context).requestFocus(inputNode);
   }
 
-  Future createUser(credentials, String phone, String state, String city,
-      String name, String email) async {
+  void _setSelectedValue(String value, String type) async {
+    dropdowns[type] = value;
+  }
+
+  Future createUser(
+      credentials, String phone, String name, String email, city, state) async {
     String c = city.replaceAll(' ', '');
     String s = state.replaceAll(' ', '');
     // ignore: unnecessary_brace_in_string_interps
@@ -68,7 +70,7 @@ class _MySignupPageState extends State<MySignupPage> {
     final u = FirebaseAuth.instance.currentUser;
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('residentLevel');
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     final isUser = FirebaseAuth.instance.currentUser;
     final resp = await callable.call(<String, dynamic>{
       'uid': u?.uid,
@@ -80,8 +82,7 @@ class _MySignupPageState extends State<MySignupPage> {
       'email': email,
       'deviceId': ''
     });
-    prefs.remove("CITY");
-    prefs.remove("STATE");
+
     if (resp.data != null && isUser != null) {
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
@@ -89,21 +90,12 @@ class _MySignupPageState extends State<MySignupPage> {
     }
   }
 
-  Future submit(String email, String password, String phone, String city,
-      String name) async {
+  Future submit(String email, String password, String phone, String name, city,
+      state) async {
     try {
-      final local = LocalState();
-      final state = await local.getDropdown('STATE');
-      final city = await local.getDropdown('CITY');
-
-      if (city?.toString().isNotEmpty == true &&
-          state?.toString().isNotEmpty == true) {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password);
-        createUser(userCredential, phone, state, city, name, email);
-      } else {
-        throw Exception('Select city and state');
-      }
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      createUser(userCredential, phone, name, email, city, state);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -129,8 +121,6 @@ class _MySignupPageState extends State<MySignupPage> {
     final myPassword = TextEditingController();
     final myEmail = TextEditingController();
     final name = TextEditingController();
-    final city = TextEditingController();
-    //final state = TextEditingController();
     final phone = TextEditingController();
     final remyPassword = TextEditingController();
 
@@ -165,7 +155,10 @@ class _MySignupPageState extends State<MySignupPage> {
                     margin: const EdgeInsets.all(10.0),
                     //alignment: const Alignment(0, 0),
                     //color: Colors.blue,
-                    child: const MyDropdown(selected: "STATE")),
+                    child: MyDropdown(
+                        selected: "state",
+                        drop: dropdowns,
+                        onSelectedValueChange: _setSelectedValue)),
               ),
               ResponsiveGridCol(
                 xs: 12,
@@ -174,7 +167,10 @@ class _MySignupPageState extends State<MySignupPage> {
                     margin: const EdgeInsets.all(10.0),
                     //alignment: const Alignment(0, 0),
                     //color: Colors.blue,
-                    child: const MyDropdown(selected: "CITY")),
+                    child: MyDropdown(
+                        selected: "city",
+                        drop: dropdowns,
+                        onSelectedValueChange: _setSelectedValue)),
               ),
               ResponsiveGridCol(
                 xs: 12,
@@ -278,7 +274,7 @@ class _MySignupPageState extends State<MySignupPage> {
                         // you'd often call a server or save the information in a database.
                         if (myPassword.text == remyPassword.text) {
                           submit(myEmail.text, myPassword.text, phone.text,
-                              city.text, name.text);
+                              name.text, dropdowns["city"], dropdowns["state"]);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Processing Data')),
                           );
