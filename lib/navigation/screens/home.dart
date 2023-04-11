@@ -23,10 +23,18 @@ class _MyHomePageState extends State<MyHomePage> {
   dynamic _username;
 
   _formatListTypes(int i, data) {
+    DateTime? myDate;
+    try {
+      myDate = data[i]["date"].toDate();
+    }catch(e){
+      // ignore: avoid_print
+      myDate = DateTime.now();
+      
+    }
     return i == 0
         ? HeadingItem('Click to add an alert')
         : MessageItem('Subscribed to: ${data[i]["type"].toUpperCase()}',
-            'Recieve: ${data[i]["frequency"]} messages. Last sent ${data[i]["date"]["_seconds"]}');
+            'Recieve ${data[i]["frequency"]} messages. Last sent $myDate');
   }
 
   Future _loadUserInfo() async {
