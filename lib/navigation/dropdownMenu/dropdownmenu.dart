@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class MyDropdown extends StatefulWidget {
   // ignore: prefer_typing_uninitialized_variables
   final Function(String, String) onSelectedValueChange;
-
+  final Function(bool, String) enable;
   // ignore: prefer_typing_uninitialized_variables
   final drop;
 
@@ -12,7 +12,8 @@ class MyDropdown extends StatefulWidget {
       {Key? key,
       required this.selected,
       required this.drop,
-      required this.onSelectedValueChange})
+      required this.onSelectedValueChange,
+      required this.enable})
       : super(key: key);
 
   final String selected;
@@ -22,17 +23,19 @@ class MyDropdown extends StatefulWidget {
   _MyDropdownState createState() =>
 
       // ignore: no_logic_in_create_state
-      _MyDropdownState(selected, drop, onSelectedValueChange);
+      _MyDropdownState(selected, drop, onSelectedValueChange, enable);
 }
 
 class _MyDropdownState extends State<MyDropdown> {
   final String selected;
   final Function(String, String) onSelectedValueChange;
+  final Function(bool, String) enable;
 
   // ignore: prefer_typing_uninitialized_variables
   final drop;
 
-  _MyDropdownState(this.selected, this.drop, this.onSelectedValueChange);
+  _MyDropdownState(
+      this.selected, this.drop, this.onSelectedValueChange, this.enable);
 
   List<String> createDdArray() {
     List<String> thearray = [];
@@ -45,11 +48,19 @@ class _MyDropdownState extends State<MyDropdown> {
         'New Jersey',
         'Pennsylvyania'
       ];
-    } else {
+    } else if (selected == "city") {
       thearray = ['Select $selected', 'Lisbon', 'Portland'];
+    } else if (selected == "frequency") {
+      thearray = [selected, 'all', 'daily', 'weekly', 'monthly'];
+    } else if (selected == "delivery") {
+      thearray = [selected, 'email', 'sms', 'push'];
+    } else {
+      thearray = [];
     }
     return thearray;
   }
+
+  bool onDropdownChanged = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +68,9 @@ class _MyDropdownState extends State<MyDropdown> {
       value: drop[selected],
       onChanged: (String? value) {
         setState(() {
-          onSelectedValueChange(value!, selected);
+          bool isEnabled = !onDropdownChanged;
+          enable(isEnabled, value!);
+          onSelectedValueChange(value, selected);
         });
       },
       validator: (value) {
@@ -67,10 +80,7 @@ class _MyDropdownState extends State<MyDropdown> {
         return null;
       },
       items: createDdArray().map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
+        return DropdownMenuItem<String>(value: value, child: Text(value));
       }).toList(),
     );
   }

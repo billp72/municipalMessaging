@@ -21,7 +21,6 @@ class _MyHomePageState extends State<CreateAlert> {
   // dynamic _username;
 
   _formatListTypes(int i, data) {
-    
     return const MessageItem(hex: 0xe800, body: 'events');
   }
 
@@ -30,8 +29,7 @@ class _MyHomePageState extends State<CreateAlert> {
     // final resp =
     //     await callable.call(<String, dynamic>{'uid': _username['uid']});
     // final data = resp.data;
-    final items =
-        List<ListItem>.generate(10, (i) => _formatListTypes(i, {}));
+    final items = List<ListItem>.generate(10, (i) => _formatListTypes(i, {}));
 
     return items;
   }
@@ -57,9 +55,8 @@ class _MyHomePageState extends State<CreateAlert> {
               if (!alertSnap.hasData || alertSnap.data.length == 0) {
                 return const Center(
                     child: Text(
-                        "No alert types have been added yet",
-                      )
-                    );
+                  "No alert types have been added yet",
+                ));
               } else if (alertSnap.connectionState == ConnectionState.waiting &&
                   !alertSnap.hasData) {
                 return const Center(child: CircularProgressIndicator());
@@ -73,6 +70,8 @@ class _MyHomePageState extends State<CreateAlert> {
                   final item = alertSnap.data?[index];
 
                   return ListTile(
+                    dense: true,
+                    //leading: const Padding(padding: EdgeInsets.only(left: 4.0)),
                     subtitle: item,
                   );
                 },
@@ -81,4 +80,3 @@ class _MyHomePageState extends State<CreateAlert> {
             future: _loadUserInfo()));
   }
 }
-

@@ -57,6 +57,8 @@ class _MySignupPageState extends State<MySignupPage> {
     FocusScope.of(context).requestFocus(inputNode);
   }
 
+  void enabled(bool isEnabled, String value) {}
+
   void _setSelectedValue(String value, String type) async {
     dropdowns[type] = value;
   }
@@ -158,6 +160,7 @@ class _MySignupPageState extends State<MySignupPage> {
                     child: MyDropdown(
                         selected: "state",
                         drop: dropdowns,
+                        enable: enabled,
                         onSelectedValueChange: _setSelectedValue)),
               ),
               ResponsiveGridCol(
@@ -170,6 +173,7 @@ class _MySignupPageState extends State<MySignupPage> {
                     child: MyDropdown(
                         selected: "city",
                         drop: dropdowns,
+                        enable: enabled,
                         onSelectedValueChange: _setSelectedValue)),
               ),
               ResponsiveGridCol(
