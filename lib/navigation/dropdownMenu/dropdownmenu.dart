@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class MyDropdown extends StatefulWidget {
   // ignore: prefer_typing_uninitialized_variables
   final Function(String, String) onSelectedValueChange;
-  final Function(bool, String) enable;
+  final Function() enable;
   // ignore: prefer_typing_uninitialized_variables
   final drop;
 
@@ -29,7 +29,7 @@ class MyDropdown extends StatefulWidget {
 class _MyDropdownState extends State<MyDropdown> {
   final String selected;
   final Function(String, String) onSelectedValueChange;
-  final Function(bool, String) enable;
+  final Function() enable;
 
   // ignore: prefer_typing_uninitialized_variables
   final drop;
@@ -51,26 +51,28 @@ class _MyDropdownState extends State<MyDropdown> {
     } else if (selected == "city") {
       thearray = ['Select $selected', 'Lisbon', 'Portland'];
     } else if (selected == "frequency") {
-      thearray = [selected, 'all', 'daily', 'weekly', 'monthly'];
+      thearray = ['Select $selected', 'all', 'daily', 'weekly', 'monthly'];
     } else if (selected == "delivery") {
-      thearray = [selected, 'email', 'sms', 'push'];
+      thearray = ['Select $selected', 'email', 'sms', 'push'];
     } else {
       thearray = [];
     }
     return thearray;
   }
 
-  bool onDropdownChanged = false;
+  List<String> returnList() {
+    return enable() ? createDdArray() : [];
+  }
+
+  //bool onDropdownChanged = false;
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: drop[selected],
+      value: enable() ? drop[selected] : null,
       onChanged: (String? value) {
         setState(() {
-          bool isEnabled = !onDropdownChanged;
-          enable(isEnabled, value!);
-          onSelectedValueChange(value, selected);
+          onSelectedValueChange(value!, selected);
         });
       },
       validator: (value) {
@@ -79,7 +81,7 @@ class _MyDropdownState extends State<MyDropdown> {
         }
         return null;
       },
-      items: createDdArray().map<DropdownMenuItem<String>>((String value) {
+      items: returnList().map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(value: value, child: Text(value));
       }).toList(),
     );

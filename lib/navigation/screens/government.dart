@@ -56,7 +56,9 @@ class _MySignupPageState extends State<MySignupPage> {
     FocusScope.of(context).requestFocus(inputNode);
   }
 
-  void enabled(bool isEnabled, String value) {}
+  bool enabled() {
+    return true;
+  }
 
   void _setSelectedValue(String value, String type) async {
     dropdowns[type] = value;

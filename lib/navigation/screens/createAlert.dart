@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 //import '../../getUserFromPreference.dart';
-import '../flexList/createAlertsList.dart';
+import '../flexList/listAlert.dart';
 
 class CreateAlert extends StatefulWidget {
   const CreateAlert({Key? key, required this.title}) : super(key: key);
@@ -21,7 +21,7 @@ class _MyHomePageState extends State<CreateAlert> {
   // dynamic _username;
 
   _formatListTypes(int i, data) {
-    return const MessageItem(hex: 0xe800, body: 'events');
+    return const MessageItem(hex: 0xe738, body: 'events');
   }
 
   Future _loadUserInfo() async {

@@ -27,39 +27,20 @@ class _MyStatefulWidgetState extends State<MessageItem> {
   final int hex;
   bool isChecked = false;
 
-  ValueChanged? _onChanged;
-
-  @override
-  void initState() {
-    super.initState();
-    _onChanged = null; // disable the checkbox initially
-  }
-
-  final dropdowns = {'frequency': 'frequency', 'delivery': 'delivery'};
+  final dropdowns = {
+    'frequency': 'Select frequency',
+    'delivery': 'Select delivery'
+  };
 
   void _setSelectedValue(String value, String type) async {
     dropdowns[type] = value;
   }
 
-  void enabled(bool isEnabled, String value) {
-    setState(() {
-      isChecked = dropdowns[value] != null ? false : isEnabled;
-    });
+  bool enabled() {
+    return isChecked;
   }
 
   _MyStatefulWidgetState(this.hex);
-
-  void disableCheckbox() {
-    setState(() {
-      _onChanged = null;
-    });
-  }
-
-  void enableCheckbox() {
-    setState(() {
-      _onChanged = (value) => setState(() => isChecked = value);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +50,14 @@ class _MyStatefulWidgetState extends State<MessageItem> {
         title: widget.buildSubtitle(),
         value: isChecked,
         secondary: Icon(MyIconData(hex), size: 35.0),
-        //controlAffinity: ListTileControlAffinity.trailing,
         contentPadding: const EdgeInsets.only(
           right: 50.0,
         ),
-        onChanged: _onChanged,
+        onChanged: (value) {
+          setState(() {
+            isChecked = value!;
+          });
+        },
       )),
       Expanded(
           child: MyDropdown(
