@@ -33,6 +33,10 @@ class _MyDropdownState extends State<MyDropdown> {
 
   // ignore: prefer_typing_uninitialized_variables
   final drop;
+  // final state = LocalState();
+  // final HttpsCallable callable =
+  //     FirebaseFunctions.instance.httpsCallable('getUserAlerts');
+  // dynamic _username;
 
   _MyDropdownState(
       this.selected, this.drop, this.onSelectedValueChange, this.enable);
@@ -49,14 +53,17 @@ class _MyDropdownState extends State<MyDropdown> {
         'Pennsylvyania'
       ];
     } else if (selected == "city") {
+      // _username = await state.getMap("USER");
+      // final resp =
+      //     await callable.call(<String, dynamic>{'uid': _username['uid']});
+      // final data = resp.data;
       thearray = ['Select $selected', 'Lisbon', 'Portland'];
     } else if (selected == "frequency") {
       thearray = ['Select $selected', 'all', 'daily', 'weekly', 'monthly'];
     } else if (selected == "delivery") {
       thearray = ['Select $selected', 'email', 'sms', 'push'];
-    } else {
-      thearray = [];
     }
+
     return thearray;
   }
 
