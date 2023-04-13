@@ -54,7 +54,7 @@ class _MyStatefulWidgetState extends State<MessageItem>
           child: CheckboxListTile(
             title: widget.buildSubtitle(),
             value: isChecked,
-            secondary: Icon(MyIconData(hex), size: 40.0),
+            secondary: Icon(MyIconData(hex), color: Colors.blue, size: 40.0),
             contentPadding: const EdgeInsets.only(
               right: 200.0,
             ),
