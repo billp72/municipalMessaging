@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:municipal_messaging/navigation/icons/my_icon.dart';
 import 'package:municipal_messaging/navigation/dropdownMenu/dropdownmenu.dart';
+import 'package:responsive_grid/responsive_grid.dart';
 
 abstract class ListItem {
   Widget buildSubtitle();
@@ -23,7 +24,8 @@ class MessageItem extends StatefulWidget implements ListItem {
   final String body;
 }
 
-class _MyStatefulWidgetState extends State<MessageItem> {
+class _MyStatefulWidgetState extends State<MessageItem>
+    with AutomaticKeepAliveClientMixin {
   final int hex;
   bool isChecked = false;
 
@@ -44,33 +46,43 @@ class _MyStatefulWidgetState extends State<MessageItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: <Widget>[
-      Expanded(
+    return SingleChildScrollView(
+        child: ResponsiveGridRow(children: [
+      ResponsiveGridCol(
+          xs: 12,
+          md: 4,
           child: CheckboxListTile(
-        title: widget.buildSubtitle(),
-        value: isChecked,
-        secondary: Icon(MyIconData(hex), size: 35.0),
-        contentPadding: const EdgeInsets.only(
-          right: 50.0,
-        ),
-        onChanged: (value) {
-          setState(() {
-            isChecked = value!;
-          });
-        },
-      )),
-      Expanded(
+            title: widget.buildSubtitle(),
+            value: isChecked,
+            secondary: Icon(MyIconData(hex), size: 40.0),
+            contentPadding: const EdgeInsets.only(
+              right: 200.0,
+            ),
+            onChanged: (value) {
+              setState(() {
+                isChecked = value!;
+              });
+            },
+          )),
+      ResponsiveGridCol(
+          xs: 12,
+          md: 4,
           child: MyDropdown(
               selected: "frequency",
               drop: dropdowns,
               enable: enabled,
               onSelectedValueChange: _setSelectedValue)),
-      Expanded(
+      ResponsiveGridCol(
+          xs: 12,
+          md: 4,
           child: MyDropdown(
               selected: "delivery",
               drop: dropdowns,
               enable: enabled,
               onSelectedValueChange: _setSelectedValue))
-    ]);
+    ]));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

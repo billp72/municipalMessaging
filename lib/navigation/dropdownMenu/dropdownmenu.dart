@@ -26,7 +26,8 @@ class MyDropdown extends StatefulWidget {
       _MyDropdownState(selected, drop, onSelectedValueChange, enable);
 }
 
-class _MyDropdownState extends State<MyDropdown> {
+class _MyDropdownState extends State<MyDropdown>
+    with AutomaticKeepAliveClientMixin {
   final String selected;
   final Function(String, String) onSelectedValueChange;
   final Function() enable;
@@ -75,6 +76,7 @@ class _MyDropdownState extends State<MyDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return DropdownButtonFormField<String>(
       value: enable() ? drop[selected] : null,
       onChanged: (String? value) {
@@ -93,4 +95,7 @@ class _MyDropdownState extends State<MyDropdown> {
       }).toList(),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
