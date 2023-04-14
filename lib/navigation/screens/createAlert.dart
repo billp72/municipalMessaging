@@ -19,6 +19,14 @@ class _MyHomePageState extends State<CreateAlert> {
   // final HttpsCallable callable =
   //     FirebaseFunctions.instance.httpsCallable('getUserAlerts');
   // dynamic _username;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      // Handle form submission
+    }
+  }
 
   _formatListTypes(int i, data) {
     return const MessageItem(hex: 0xe738, body: 'events');
@@ -42,41 +50,50 @@ class _MyHomePageState extends State<CreateAlert> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              _handleLogout();
-            },
-            icon: const Icon(Icons.home_outlined),
-          ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                _handleLogout();
+              },
+              icon: const Icon(Icons.home_outlined),
+            ),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: _submitForm,
+            )
+          ],
           title: const Text("Create Alert"),
         ),
-        body: FutureBuilder(
-            builder: (context, alertSnap) {
-              if (!alertSnap.hasData || alertSnap.data.length == 0) {
-                return const Center(
-                    child: Text(
-                  "No alert types have been added yet",
-                ));
-              } else if (alertSnap.connectionState == ConnectionState.waiting &&
-                  !alertSnap.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return ListView.builder(
-                // Let the ListView know how many items it needs to build.
-                itemCount: alertSnap.data?.length,
-                // Provide a builder function. This is where the magic happens.
-                // Convert each item into a widget based on the type of item it is.
-                itemBuilder: (context, index) {
-                  final item = alertSnap.data?[index];
+        body: Form(
+            key: _formKey,
+            child: FutureBuilder(
+                builder: (context, alertSnap) {
+                  if (!alertSnap.hasData || alertSnap.data.length == 0) {
+                    return const Center(
+                        child: Text(
+                      "No alert types have been added yet",
+                    ));
+                  } else if (alertSnap.connectionState ==
+                          ConnectionState.waiting &&
+                      !alertSnap.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return ListView.builder(
+                    // Let the ListView know how many items it needs to build.
+                    itemCount: alertSnap.data?.length,
+                    // Provide a builder function. This is where the magic happens.
+                    // Convert each item into a widget based on the type of item it is.
+                    itemBuilder: (context, index) {
+                      final item = alertSnap.data?[index];
 
-                  return ListTile(
-                    dense: true,
-                    //leading: const Padding(padding: EdgeInsets.only(left: 4.0)),
-                    subtitle: item,
+                      return ListTile(
+                        dense: true,
+                        //leading: const Padding(padding: EdgeInsets.only(left: 4.0)),
+                        subtitle: item,
+                      );
+                    },
                   );
                 },
-              );
-            },
-            future: _loadUserInfo()));
+                future: _loadUserInfo())));
   }
 }
