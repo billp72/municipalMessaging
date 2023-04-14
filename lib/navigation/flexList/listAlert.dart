@@ -46,8 +46,10 @@ class _MyStatefulWidgetState extends State<MessageItem>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SingleChildScrollView(
-        child: ResponsiveGridRow(children: [
+        child: Form(
+            child: ResponsiveGridRow(children: [
       ResponsiveGridCol(
           xs: 12,
           md: 4,
@@ -80,7 +82,7 @@ class _MyStatefulWidgetState extends State<MessageItem>
               drop: dropdowns,
               enable: enabled,
               onSelectedValueChange: _setSelectedValue))
-    ]));
+    ])));
   }
 
   @override
