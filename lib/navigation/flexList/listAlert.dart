@@ -9,7 +9,12 @@ abstract class ListItem {
 }
 
 class MessageItem extends StatefulWidget implements ListItem {
-  const MessageItem({Key? key, required this.hex, required this.body})
+  final Function(Object) submitAlert;
+  const MessageItem(
+      {Key? key,
+      required this.hex,
+      required this.body,
+      required this.submitAlert})
       : super(key: key);
 
   @override
@@ -19,7 +24,9 @@ class MessageItem extends StatefulWidget implements ListItem {
 
   @override
   // ignore: library_private_types_in_public_api, no_logic_in_create_state
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState(hex);
+  _MyStatefulWidgetState createState() =>
+      // ignore: no_logic_in_create_state
+      _MyStatefulWidgetState(hex, body, submitAlert);
   final int hex;
   final String body;
 }
@@ -27,22 +34,30 @@ class MessageItem extends StatefulWidget implements ListItem {
 class _MyStatefulWidgetState extends State<MessageItem>
     with AutomaticKeepAliveClientMixin {
   final int hex;
+  final String body;
+  final Function(Object) submitAlert;
   bool isChecked = false;
 
-  final dropdowns = {
+  final Map<String, String> dropdowns = {
     'frequency': 'Select frequency',
-    'delivery': 'Select delivery'
+    'delivery': 'Select delivery',
+    'type': ""
   };
 
   void _setSelectedValue(String value, String type) async {
     dropdowns[type] = value;
+    if (dropdowns["frequency"] != "Select frequency" &&
+        dropdowns["delivery"] != "Select delivery" &&
+        type.isNotEmpty) {
+      submitAlert(dropdowns);
+    }
   }
 
   bool enabled() {
     return isChecked;
   }
 
-  _MyStatefulWidgetState(this.hex);
+  _MyStatefulWidgetState(this.hex, this.body, this.submitAlert);
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +78,11 @@ class _MyStatefulWidgetState extends State<MessageItem>
             onChanged: (value) {
               setState(() {
                 isChecked = value!;
+                if (isChecked) {
+                  dropdowns["type"] = body;
+                } else {
+                  submitAlert({});
+                }
               });
             },
           )),

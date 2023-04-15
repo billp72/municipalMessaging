@@ -1,5 +1,7 @@
 //import 'package:cloud_functions/cloud_functions.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 //import '../../getUserFromPreference.dart';
@@ -20,16 +22,30 @@ class _MyHomePageState extends State<CreateAlert> {
   //     FirebaseFunctions.instance.httpsCallable('getUserAlerts');
   // dynamic _username;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  //String submittedValue = '';
+  //bool submittedCheck = false;
+
+  final List<Object> submittedValues = [];
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      // Handle form submission
+      //print(submittedValues);
     }
   }
 
+  void _captureSubmitted(val) {
+    //TODO - create Map with key type and remove clear all
+    if (val.isNotEmpty) {
+      submittedValues.add(val);
+    } else {
+      submittedValues.clear();
+    }
+    print(submittedValues);
+  }
+
   _formatListTypes(int i, data) {
-    return const MessageItem(hex: 0xe738, body: 'events');
+    return MessageItem(
+        hex: 0xe738, body: 'events', submitAlert: _captureSubmitted);
   }
 
   Future _loadUserInfo() async {
