@@ -81,7 +81,7 @@ class _MyStatefulWidgetState extends State<MessageItem>
                 if (isChecked) {
                   dropdowns["type"] = body;
                 } else {
-                  submitAlert({});
+                  submitAlert({"type": body});
                 }
               });
             },

@@ -34,11 +34,14 @@ class _MyHomePageState extends State<CreateAlert> {
   }
 
   void _captureSubmitted(val) {
-    //TODO - create Map with key type and remove clear all
-    if (val.isNotEmpty) {
+    if (val["frequence"] != "" && val["delivery"] != "") {
       submittedValues.add(val);
-    } else {
-      submittedValues.clear();
+    } else if (submittedValues.isNotEmpty) {
+      for (var i in submittedValues.asMap().entries) {
+        if (i.value == val["type"]) {
+          submittedValues.remove(i.key);
+        }
+      }
     }
     print(submittedValues);
   }
