@@ -22,8 +22,6 @@ class _MyHomePageState extends State<CreateAlert> {
   //     FirebaseFunctions.instance.httpsCallable('getUserAlerts');
   // dynamic _username;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  //String submittedValue = '';
-  //bool submittedCheck = false;
 
   final List<Map<String, dynamic>> submittedValues = [];
 
@@ -115,16 +113,12 @@ class _MyHomePageState extends State<CreateAlert> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   return ListView.builder(
-                    // Let the ListView know how many items it needs to build.
                     itemCount: alertSnap.data?.length,
-                    // Provide a builder function. This is where the magic happens.
-                    // Convert each item into a widget based on the type of item it is.
                     itemBuilder: (context, index) {
                       final item = alertSnap.data?[index];
 
                       return ListTile(
                         dense: true,
-                        //leading: const Padding(padding: EdgeInsets.only(left: 4.0)),
                         subtitle: item,
                       );
                     },
