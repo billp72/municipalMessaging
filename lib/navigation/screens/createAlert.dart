@@ -35,6 +35,7 @@ class _MyHomePageState extends State<CreateAlert> {
 
   void _captureSubmitted(val) {
     if (val.containsKey("frequency") && val.containsKey("delivery")) {
+      val["uid"] = "2eger45er";
       submittedValues.add(val);
     } else if (submittedValues.isNotEmpty) {
       List<Map<String, dynamic>> copyOfList = List.from(submittedValues);
