@@ -35,9 +35,9 @@ class _MyStatefulWidgetState extends State<MessageItem>
     with AutomaticKeepAliveClientMixin {
   final int hex;
   final String body;
-  final Function(Object) submitAlert;
   final String frequencyDefault = "Select frequency";
   final String deliveryDefault = "Select delivery";
+  final Function(Object) submitAlert;
 
   bool isChecked = false;
 
