@@ -37,7 +37,7 @@ class _MyStatefulWidgetState extends State<MessageItem>
   final String body;
   final Function(Object) submitAlert;
   bool isChecked = false;
-  //final GlobalKey _childWidgetKey2 = GlobalKey();
+
   final Map<String, String> dropdowns = {
     'frequency': 'Select frequency',
     'delivery': 'Select delivery',

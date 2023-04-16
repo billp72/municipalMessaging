@@ -29,7 +29,7 @@ class _MyHomePageState extends State<CreateAlert> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      //print(submittedValues);
+      print(submittedValues);
     }
   }
 
@@ -40,7 +40,6 @@ class _MyHomePageState extends State<CreateAlert> {
       List<Map<String, dynamic>> copyOfList = List.from(submittedValues);
       copyOfList.asMap().forEach((key, value) {
         if (value["type"] == val["type"]) {
-          // ignore: list_remove_unrelated_type
           submittedValues.removeAt(key);
         }
       });
