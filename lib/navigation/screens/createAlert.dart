@@ -25,7 +25,7 @@ class _MyHomePageState extends State<CreateAlert> {
   //String submittedValue = '';
   //bool submittedCheck = false;
 
-  final List<Object> submittedValues = [];
+  final List<Map<String, dynamic>> submittedValues = [];
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -34,14 +34,19 @@ class _MyHomePageState extends State<CreateAlert> {
   }
 
   void _captureSubmitted(val) {
-    if (val["frequence"] != "" && val["delivery"] != "") {
+    if (val.containsKey("frequency") && val.containsKey("delivery")) {
       submittedValues.add(val);
     } else if (submittedValues.isNotEmpty) {
-      for (var i in submittedValues.asMap().entries) {
-        if (i.value == val["type"]) {
-          submittedValues.remove(i.key);
+      List<Map<String, dynamic>> copyOfList = List.from(submittedValues);
+      copyOfList.asMap().forEach((key, value) {
+        if (value["type"] == val["type"]) {
+          print(value["type"]);
+          print(val["type"]);
+          print(key);
+          // ignore: list_remove_unrelated_type
+          submittedValues.removeAt(key);
         }
-      }
+      });
     }
     print(submittedValues);
   }

@@ -20,17 +20,18 @@ class MyDropdown extends StatefulWidget {
 
   @override
   // ignore: library_private_types_in_public_api, no_logic_in_create_state
-  _MyDropdownState createState() =>
+  MyDropdownState createState() =>
 
       // ignore: no_logic_in_create_state
-      _MyDropdownState(selected, drop, onSelectedValueChange, enable);
+      MyDropdownState(selected, drop, onSelectedValueChange, enable);
 }
 
-class _MyDropdownState extends State<MyDropdown>
+class MyDropdownState extends State<MyDropdown>
     with AutomaticKeepAliveClientMixin {
   final String selected;
   final Function(String, String) onSelectedValueChange;
   final Function() enable;
+  // ignore: prefer_typing_uninitialized_variables
 
   // ignore: prefer_typing_uninitialized_variables
   final drop;
@@ -39,7 +40,7 @@ class _MyDropdownState extends State<MyDropdown>
   //     FirebaseFunctions.instance.httpsCallable('getUserAlerts');
   // dynamic _username;
 
-  _MyDropdownState(
+  MyDropdownState(
       this.selected, this.drop, this.onSelectedValueChange, this.enable);
 
   List<String> createDdArray() {
@@ -70,6 +71,14 @@ class _MyDropdownState extends State<MyDropdown>
 
   List<String> returnList() {
     return enable() ? createDdArray() : [];
+  }
+
+  void doSomething() {
+    // Do something here
+    // ignore: avoid_print
+    //widget.key?.currentState?.reset();
+    // ignore: avoid_print
+    //print();
   }
 
   //bool onDropdownChanged = false;

@@ -49,7 +49,6 @@ class MySignupPage extends StatefulWidget {
 
 class _MySignupPageState extends State<MySignupPage> {
   final dropdowns = {'state': 'Select state'};
-
   FocusNode inputNode = FocusNode();
 // to open keyboard call this function;
   void openKeyboard() {
