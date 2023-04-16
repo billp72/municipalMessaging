@@ -73,7 +73,7 @@ class _MyStatefulWidgetState extends State<MessageItem>
             value: isChecked,
             secondary: Icon(MyIconData(hex), color: Colors.blue, size: 40.0),
             contentPadding: const EdgeInsets.only(
-              right: 200.0,
+              right: 100.0,
             ),
             onChanged: (value) {
               setState(() {

@@ -40,28 +40,38 @@ class _MyHomePageState extends State<CreateAlert> {
       List<Map<String, dynamic>> copyOfList = List.from(submittedValues);
       copyOfList.asMap().forEach((key, value) {
         if (value["type"] == val["type"]) {
-          print(value["type"]);
-          print(val["type"]);
-          print(key);
           // ignore: list_remove_unrelated_type
           submittedValues.removeAt(key);
         }
       });
     }
-    print(submittedValues);
   }
 
   _formatListTypes(int i, data) {
     return MessageItem(
-        hex: 0xe738, body: 'events', submitAlert: _captureSubmitted);
+        hex: data[i]["hex"],
+        body: data[i]["body"],
+        submitAlert: _captureSubmitted);
   }
+
+  List<Map<String, Object>> data1 = [
+    {"hex": 0xe738, "body": "events"},
+    {"hex": 0xe738, "body": "emergancy"},
+    {"hex": 0xe738, "body": "taxes"},
+    {"hex": 0xe738, "body": "ordinance"},
+    {"hex": 0xe738, "body": "employment"},
+    {"hex": 0xe738, "body": "publicworks"},
+    {"hex": 0xe738, "body": "road_closers"},
+    {"hex": 0xe738, "body": "construction"}
+  ];
 
   Future _loadUserInfo() async {
     // _username = await state.getMap("USER");
     // final resp =
     //     await callable.call(<String, dynamic>{'uid': _username['uid']});
     // final data = resp.data;
-    final items = List<ListItem>.generate(10, (i) => _formatListTypes(i, {}));
+    final items = List<ListItem>.generate(
+        data1.length, (i) => _formatListTypes(i, data1));
 
     return items;
   }
