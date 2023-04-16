@@ -50,7 +50,7 @@ class MySignupPage extends StatefulWidget {
 class _MySignupPageState extends State<MySignupPage> {
   final dropdowns = {'state': 'Select state'};
   FocusNode inputNode = FocusNode();
-// to open keyboard call this function;
+
   void openKeyboard() {
     FocusScope.of(context).requestFocus(inputNode);
   }
@@ -282,8 +282,6 @@ class _MySignupPageState extends State<MySignupPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
                         if (myPassword.text == remyPassword.text) {
                           submit(myEmail.text, myPassword.text, phone.text,
                               dropdowns["state"]!, city.text, name.text);
