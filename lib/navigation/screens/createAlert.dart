@@ -54,14 +54,14 @@ class _MyHomePageState extends State<CreateAlert> {
   }
 
   List<Map<String, Object>> data1 = [
-    {"hex": 0xe738, "body": "events"},
-    {"hex": 0xe738, "body": "emergancy"},
-    {"hex": 0xe738, "body": "taxes"},
-    {"hex": 0xe738, "body": "ordinance"},
-    {"hex": 0xe738, "body": "employment"},
+    {"hex": 0xe23e, "body": "events"},
+    {"hex": 0xe151, "body": "emergancy"},
+    {"hex": 0xe7b0, "body": "taxes"},
+    {"hex": 0xf05c1, "body": "ordinance"},
+    {"hex": 0xf4d5, "body": "employment"},
     {"hex": 0xe738, "body": "publicworks"},
-    {"hex": 0xe738, "body": "road_closers"},
-    {"hex": 0xe738, "body": "construction"}
+    {"hex": 0xe757, "body": "road_closers"},
+    {"hex": 0xe189, "body": "construction"}
   ];
 
   Future _loadUserInfo() async {
@@ -75,25 +75,27 @@ class _MyHomePageState extends State<CreateAlert> {
     return items;
   }
 
-  void _handleLogout() async {
-    Navigator.pushReplacementNamed(context, '/home');
-  }
+  // void _handleLogout() async {
+  //   Navigator.pushReplacementNamed(context, '/home');
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(
-              onPressed: () {
-                _handleLogout();
-              },
-              icon: const Icon(Icons.home_outlined),
-            ),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: _submitForm,
-            )
+            // IconButton(
+            //   onPressed: () {
+            //     _handleLogout();
+            //   },
+            //   icon: const Icon(Icons.home_outlined, size: 50.0),
+            // ),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 120.0, 0),
+                child: IconButton(
+                  icon: const Icon(Icons.add, size: 50.0),
+                  onPressed: _submitForm,
+                ))
           ],
           title: const Text("Create Alert"),
         ),
