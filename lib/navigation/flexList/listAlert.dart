@@ -36,18 +36,21 @@ class _MyStatefulWidgetState extends State<MessageItem>
   final int hex;
   final String body;
   final Function(Object) submitAlert;
+  final String frequencyDefault = "Select frequency";
+  final String deliveryDefault = "Select delivery";
+
   bool isChecked = false;
 
   final Map<String, String> dropdowns = {
-    'frequency': 'Select frequency',
-    'delivery': 'Select delivery',
-    'type': ""
+    "frequency": "Select frequency",
+    "delivery": "Select delivery",
+    "type": ""
   };
 
   void _setSelectedValue(String value, String type) async {
     dropdowns[type] = value;
-    if (dropdowns["frequency"] != "Select frequency" &&
-        dropdowns["delivery"] != "Select delivery" &&
+    if (dropdowns["frequency"] != frequencyDefault &&
+        dropdowns["delivery"] != deliveryDefault &&
         type.isNotEmpty) {
       submitAlert(dropdowns);
     }
@@ -81,8 +84,8 @@ class _MyStatefulWidgetState extends State<MessageItem>
                 if (isChecked) {
                   dropdowns["type"] = body;
                 } else {
-                  dropdowns["frequency"] = "Select frequency";
-                  dropdowns["delivery"] = "Select delivery";
+                  dropdowns["frequency"] = frequencyDefault;
+                  dropdowns["delivery"] = deliveryDefault;
                   submitAlert({"type": body});
                 }
               });
