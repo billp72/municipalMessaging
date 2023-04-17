@@ -85,7 +85,7 @@ class _MyHomePageState extends State<CreateAlert> {
 
   List<Map<String, Object>> data1 = [
     {"hex": 0xe23e, "body": "events", "color": 0xffef6c00},
-    {"hex": 0xe151, "body": "emergancy", "color": 0xffe65100},
+    {"hex": 0xe151, "body": "emergancy", "color": 0xffffca28},
     {"hex": 0xe7b0, "body": "taxes", "color": 0xff90a4ae},
     {"hex": 0xf05c1, "body": "ordinance", "color": 0xff78909c},
     {"hex": 0xf4d5, "body": "employment", "color": 0xff01579b},
