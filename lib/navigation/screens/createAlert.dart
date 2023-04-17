@@ -1,11 +1,10 @@
-//import 'package:cloud_functions/cloud_functions.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
-//import '../../getUserFromPreference.dart';
+import '../../getUserFromPreference.dart';
 import '../flexList/listAlert.dart';
+//import 'package:intl/intl.dart';
 
 class CreateAlert extends StatefulWidget {
   const CreateAlert({Key? key, required this.title}) : super(key: key);
@@ -17,23 +16,31 @@ class CreateAlert extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<CreateAlert> {
-  // final state = LocalState();
-  // final HttpsCallable callable =
-  //     FirebaseFunctions.instance.httpsCallable('getUserAlerts');
-  // dynamic _username;
+  final state = LocalState();
+  final HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('addAlerts');
+  dynamic _username;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final List<Map<String, dynamic>> submittedValues = [];
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      print(submittedValues);
+      final resp =
+          await callable.call(<String, dynamic>{'data': submittedValues});
+      final data = resp.data;
+      //print(submittedValues);
     }
   }
 
-  void _captureSubmitted(val) {
+  void _captureSubmitted(val) async {
     if (val.containsKey("frequency") && val.containsKey("delivery")) {
-      val["uid"] = "2eger45er";
+      //final DateTime now = DateTime.now();
+      // final DateFormat formatter = DateFormat('dd-mm-yyyy');
+      // final String formatted = formatter.format(now);
+      _username = await state.getMap("USER");
+      val["uid"] = _username["uid"];
+      val["date"] = '04/16/2023';
       submittedValues.add(val);
     } else if (submittedValues.isNotEmpty) {
       List<Map<String, dynamic>> copyOfList = List.from(submittedValues);
@@ -64,37 +71,36 @@ class _MyHomePageState extends State<CreateAlert> {
   ];
 
   Future _loadUserInfo() async {
-    // _username = await state.getMap("USER");
-    // final resp =
-    //     await callable.call(<String, dynamic>{'uid': _username['uid']});
-    // final data = resp.data;
     final items = List<ListItem>.generate(
         data1.length, (i) => _formatListTypes(i, data1));
 
     return items;
   }
 
-  // void _handleLogout() async {
-  //   Navigator.pushReplacementNamed(context, '/home');
-  // }
+  void _handleLogout() async {
+    Navigator.pushReplacementNamed(context, '/home');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           actions: [
-            // IconButton(
-            //   onPressed: () {
-            //     _handleLogout();
-            //   },
-            //   icon: const Icon(Icons.home_outlined, size: 50.0),
-            // ),
             Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 120.0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 0, 10.0, 0),
                 child: IconButton(
                   icon: const Icon(Icons.add, size: 50.0),
                   onPressed: _submitForm,
-                ))
+                )),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 60.0, 0),
+                child: IconButton(
+                  onPressed: () {
+                    _handleLogout();
+                  },
+                  icon: const Icon(Icons.home_outlined, size: 50.0),
+                )),
           ],
           title: const Text("Create Alert"),
         ),

@@ -25,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
   _formatListTypes(int i, data) {
     DateTime? myDate;
     try {
-      myDate = data[i]["date"].toDate();
+      myDate = data[i]["date"]; //.toDate();
     } catch (e) {
       // ignore: avoid_print
       myDate = DateTime.now();
