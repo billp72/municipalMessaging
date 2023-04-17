@@ -14,6 +14,7 @@ class MessageItem extends StatefulWidget implements ListItem {
       {Key? key,
       required this.hex,
       required this.body,
+      required this.color,
       required this.submitAlert})
       : super(key: key);
 
@@ -26,15 +27,17 @@ class MessageItem extends StatefulWidget implements ListItem {
   // ignore: library_private_types_in_public_api, no_logic_in_create_state
   _MyStatefulWidgetState createState() =>
       // ignore: no_logic_in_create_state
-      _MyStatefulWidgetState(hex, body, submitAlert);
+      _MyStatefulWidgetState(hex, body, color, submitAlert);
   final int hex;
   final String body;
+  final int color;
 }
 
 class _MyStatefulWidgetState extends State<MessageItem>
     with AutomaticKeepAliveClientMixin {
   final int hex;
   final String body;
+  final int color;
   final String frequencyDefault = "Select frequency";
   final String deliveryDefault = "Select delivery";
   final Function(Object) submitAlert;
@@ -60,7 +63,7 @@ class _MyStatefulWidgetState extends State<MessageItem>
     return isChecked;
   }
 
-  _MyStatefulWidgetState(this.hex, this.body, this.submitAlert);
+  _MyStatefulWidgetState(this.hex, this.body, this.color, this.submitAlert);
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +77,7 @@ class _MyStatefulWidgetState extends State<MessageItem>
           child: CheckboxListTile(
             title: widget.buildSubtitle(),
             value: isChecked,
-            secondary: Icon(MyIconData(hex), color: Colors.blue, size: 40.0),
+            secondary: Icon(MyIconData(hex), color: Color(color), size: 40.0),
             contentPadding: const EdgeInsets.only(
               right: 100.0,
             ),

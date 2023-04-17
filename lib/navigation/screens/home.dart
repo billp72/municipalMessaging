@@ -90,7 +90,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: FutureBuilder(
             builder: (context, alertSnap) {
-              if (!alertSnap.hasData || alertSnap.data.length == 0) {
+              if (alertSnap.connectionState == ConnectionState.waiting &&
+                  !alertSnap.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (!alertSnap.hasData || alertSnap.data.length == 0) {
                 return Center(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -109,9 +112,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         "Click to add alarm",
                       )
                     ]));
-              } else if (alertSnap.connectionState == ConnectionState.waiting &&
-                  !alertSnap.hasData) {
-                return const Center(child: CircularProgressIndicator());
               }
               return ListView.builder(
                 itemCount: alertSnap.data?.length,

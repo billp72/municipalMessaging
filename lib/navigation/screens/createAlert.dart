@@ -29,10 +29,15 @@ class _MyHomePageState extends State<CreateAlert> {
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      String message = "Processing submission";
+      if (submittedValues.isEmpty) {
+        message = "No alerts selected";
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Processing submission.'),
-          duration: Duration(seconds: 3),
+        SnackBar(
+          content: Text(message),
+          duration: const Duration(seconds: 3),
         ),
       );
 
@@ -74,19 +79,20 @@ class _MyHomePageState extends State<CreateAlert> {
     return MessageItem(
         hex: data[i]["hex"],
         body: data[i]["body"],
+        color: data[i]["color"],
         submitAlert: _captureSubmitted);
   }
 
   List<Map<String, Object>> data1 = [
-    {"hex": 0xe23e, "body": "events"},
-    {"hex": 0xe151, "body": "emergancy"},
-    {"hex": 0xe7b0, "body": "taxes"},
-    {"hex": 0xf05c1, "body": "ordinance"},
-    {"hex": 0xf4d5, "body": "employment"},
-    {"hex": 0xe4f0, "body": "publicworks"},
-    {"hex": 0xe757, "body": "road_closers"},
-    {"hex": 0xe189, "body": "construction"},
-    {"hex": 0xe087, "body": "announcements"},
+    {"hex": 0xe23e, "body": "events", "color": 0xffef6c00},
+    {"hex": 0xe151, "body": "emergancy", "color": 0xffe65100},
+    {"hex": 0xe7b0, "body": "taxes", "color": 0xff90a4ae},
+    {"hex": 0xf05c1, "body": "ordinance", "color": 0xff78909c},
+    {"hex": 0xf4d5, "body": "employment", "color": 0xff01579b},
+    {"hex": 0xe4f0, "body": "publicworks", "color": 0xff004d40},
+    {"hex": 0xe757, "body": "road_closers", "color": 0xffd50000},
+    {"hex": 0xe189, "body": "construction", "color": 0xffff5722},
+    {"hex": 0xe087, "body": "announcements", "color": 0xfff48fb1},
   ];
 
   Future _loadUserInfo() async {
