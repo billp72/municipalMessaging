@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -71,9 +73,11 @@ class _MySignupPageState extends State<MySignupPage> {
     // ignore: unnecessary_brace_in_string_interps
     String muni = '${c.toLowerCase()}_${s.toLowerCase()}';
     final u = FirebaseAuth.instance.currentUser;
-    HttpsCallable callable =
+    final HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('residentLevel');
-
+    final HttpsCallable callclaims =
+        FirebaseFunctions.instance.httpsCallable('getCustomClaim');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final isUser = FirebaseAuth.instance.currentUser;
     final resp = await callable.call(<String, dynamic>{
       'uid': u?.uid,
@@ -87,6 +91,13 @@ class _MySignupPageState extends State<MySignupPage> {
     });
 
     if (resp.data != null && isUser != null) {
+      final theclaim = await callclaims.call(<String, dynamic>{'uid': u?.uid});
+      var data = theclaim.data;
+      data["uid"] = u?.uid;
+
+      String json = jsonEncode(data);
+
+      prefs.setString("USER", json);
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
           context, '/home', ModalRoute.withName('/home'));

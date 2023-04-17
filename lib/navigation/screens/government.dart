@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../dropdownMenu/dropdownmenu.dart';
 
 class Government extends StatelessWidget {
@@ -70,8 +73,11 @@ class _MySignupPageState extends State<MySignupPage> {
     // ignore: unnecessary_brace_in_string_interps
     String muni = '${c.toLowerCase()}_${s.toLowerCase()}';
     final u = FirebaseAuth.instance.currentUser;
-    HttpsCallable callable =
-        FirebaseFunctions.instance.httpsCallable('residentLevel');
+    final HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('adminLevel');
+    final HttpsCallable callclaims =
+        FirebaseFunctions.instance.httpsCallable('getCustomClaim');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final resp = await callable.call(<String, dynamic>{
       'uid': u?.uid,
       'city': city,
@@ -85,6 +91,13 @@ class _MySignupPageState extends State<MySignupPage> {
 
     final isUser = FirebaseAuth.instance.currentUser;
     if (resp.data != null && isUser != null) {
+      final theclaim = await callclaims.call(<String, dynamic>{'uid': u?.uid});
+      var data = theclaim.data;
+      data["uid"] = u?.uid;
+
+      String json = jsonEncode(data);
+
+      prefs.setString("USER", json);
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
           context, '/home', ModalRoute.withName('/home'));

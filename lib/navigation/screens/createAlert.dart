@@ -29,6 +29,13 @@ class _MyHomePageState extends State<CreateAlert> {
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Processing submission.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+
       final resp =
           await callableAdd.call(<String, dynamic>{'data': submittedValues});
       final data = resp.data;
@@ -63,16 +70,11 @@ class _MyHomePageState extends State<CreateAlert> {
     }
   }
 
-  _formatListTypes(int i, data) async {
-    _username = await state.getMap("USER");
-    final resp = await callableCheck.call(
-        <String, dynamic>{'uid': _username["uid"], 'type': data[i]["body"]});
-    if (!resp.data) {
-      return MessageItem(
-          hex: data[i]["hex"],
-          body: data[i]["body"],
-          submitAlert: _captureSubmitted);
-    }
+  _formatListTypes(int i, data) {
+    return MessageItem(
+        hex: data[i]["hex"],
+        body: data[i]["body"],
+        submitAlert: _captureSubmitted);
   }
 
   List<Map<String, Object>> data1 = [
@@ -81,14 +83,25 @@ class _MyHomePageState extends State<CreateAlert> {
     {"hex": 0xe7b0, "body": "taxes"},
     {"hex": 0xf05c1, "body": "ordinance"},
     {"hex": 0xf4d5, "body": "employment"},
-    {"hex": 0xe738, "body": "publicworks"},
+    {"hex": 0xe4f0, "body": "publicworks"},
     {"hex": 0xe757, "body": "road_closers"},
-    {"hex": 0xe189, "body": "construction"}
+    {"hex": 0xe189, "body": "construction"},
+    {"hex": 0xe087, "body": "announcements"},
   ];
 
   Future _loadUserInfo() async {
+    _username = await state.getMap("USER");
+    final List newList = [];
+    for (int i = 0; i < data1.length; i++) {
+      final resp = await callableCheck.call(
+          <String, dynamic>{'uid': _username["uid"], 'type': data1[i]["body"]});
+      if (resp.data) {
+        newList.add(data1[i]);
+      }
+    }
+
     final items = List<ListItem>.generate(
-        data1.length, (i) => _formatListTypes(i, data1));
+        newList.length, (i) => _formatListTypes(i, newList));
 
     return items;
   }
@@ -104,9 +117,9 @@ class _MyHomePageState extends State<CreateAlert> {
           //automaticallyImplyLeading: false,
           actions: [
             Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 60.0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 0, 110.0, 0),
                 child: IconButton(
-                  icon: const Icon(Icons.add, size: 50.0),
+                  icon: const Icon(Icons.add, size: 40.0),
                   onPressed: _submitForm,
                 )),
           ],
@@ -116,15 +129,14 @@ class _MyHomePageState extends State<CreateAlert> {
             key: _formKey,
             child: FutureBuilder(
                 builder: (context, alertSnap) {
-                  if (!alertSnap.hasData || alertSnap.data.length == 0) {
+                  if (alertSnap.connectionState == ConnectionState.waiting &&
+                      !alertSnap.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (!alertSnap.hasData || alertSnap.data.length == 0) {
                     return const Center(
                         child: Text(
                       "No alert types have been added yet",
                     ));
-                  } else if (alertSnap.connectionState ==
-                          ConnectionState.waiting &&
-                      !alertSnap.hasData) {
-                    return const Center(child: CircularProgressIndicator());
                   }
                   return ListView.builder(
                     itemCount: alertSnap.data?.length,
