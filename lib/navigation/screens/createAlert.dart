@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:cloud_functions/cloud_functions.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,10 @@ class CreateAlert extends StatefulWidget {
 
 class _MyHomePageState extends State<CreateAlert> {
   final state = LocalState();
-  final HttpsCallable callable =
+  final HttpsCallable callableAdd =
       FirebaseFunctions.instance.httpsCallable('addAlerts');
+  final HttpsCallable callableCheck =
+      FirebaseFunctions.instance.httpsCallable('checkAlerts');
   dynamic _username;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -27,9 +30,17 @@ class _MyHomePageState extends State<CreateAlert> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final resp =
-          await callable.call(<String, dynamic>{'data': submittedValues});
+          await callableAdd.call(<String, dynamic>{'data': submittedValues});
       final data = resp.data;
-      //print(submittedValues);
+      if (data) {
+        _handleBack();
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Something went wrong. Alerts not added.')),
+        );
+      }
     }
   }
 
@@ -52,11 +63,16 @@ class _MyHomePageState extends State<CreateAlert> {
     }
   }
 
-  _formatListTypes(int i, data) {
-    return MessageItem(
-        hex: data[i]["hex"],
-        body: data[i]["body"],
-        submitAlert: _captureSubmitted);
+  _formatListTypes(int i, data) async {
+    _username = await state.getMap("USER");
+    final resp = await callableCheck.call(
+        <String, dynamic>{'uid': _username["uid"], 'type': data[i]["body"]});
+    if (!resp.data) {
+      return MessageItem(
+          hex: data[i]["hex"],
+          body: data[i]["body"],
+          submitAlert: _captureSubmitted);
+    }
   }
 
   List<Map<String, Object>> data1 = [
@@ -77,7 +93,7 @@ class _MyHomePageState extends State<CreateAlert> {
     return items;
   }
 
-  void _handleLogout() async {
+  void _handleBack() async {
     Navigator.pushReplacementNamed(context, '/home');
   }
 
@@ -85,21 +101,13 @@ class _MyHomePageState extends State<CreateAlert> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
+          //automaticallyImplyLeading: false,
           actions: [
-            Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 10.0, 0),
-                child: IconButton(
-                  icon: const Icon(Icons.add, size: 50.0),
-                  onPressed: _submitForm,
-                )),
             Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 60.0, 0),
                 child: IconButton(
-                  onPressed: () {
-                    _handleLogout();
-                  },
-                  icon: const Icon(Icons.home_outlined, size: 50.0),
+                  icon: const Icon(Icons.add, size: 50.0),
+                  onPressed: _submitForm,
                 )),
           ],
           title: const Text("Create Alert"),
