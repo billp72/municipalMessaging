@@ -150,8 +150,6 @@ class _MySignupPageState extends State<MySignupPage> {
                 child: Container(
                   height: 50,
                   margin: const EdgeInsets.all(10.0),
-                  //alignment: const Alignment(0, 0),
-                  //color: Colors.blue,
                   child: TextFormField(
                     controller: name,
                     focusNode: inputNode,
@@ -168,8 +166,6 @@ class _MySignupPageState extends State<MySignupPage> {
                 child: Container(
                     height: 50,
                     margin: const EdgeInsets.all(10.0),
-                    //alignment: const Alignment(0, 0),
-                    //color: Colors.blue,
                     child: MyDropdown(
                         selected: "state",
                         drop: dropdowns,
@@ -181,8 +177,6 @@ class _MySignupPageState extends State<MySignupPage> {
                 child: Container(
                     height: 50,
                     margin: const EdgeInsets.all(10.0),
-                    //alignment: const Alignment(0, 0),
-                    //color: Colors.blue,
                     child: MyDropdown(
                         selected: "city",
                         drop: dropdowns,
@@ -194,8 +188,6 @@ class _MySignupPageState extends State<MySignupPage> {
                 child: Container(
                   height: 50,
                   margin: const EdgeInsets.all(10.0),
-                  //alignment: const Alignment(0, 0),
-                  //color: Colors.blue,
                   child: TextFormField(
                     controller: myEmail,
                     validator: (value) {
@@ -216,8 +208,6 @@ class _MySignupPageState extends State<MySignupPage> {
                 child: Container(
                   height: 50,
                   margin: const EdgeInsets.all(10.0),
-                  //alignment: const Alignment(0, 0),
-                  //color: Colors.blue,
                   child: TextFormField(
                     controller: phone,
                     validator: (value) {
@@ -238,8 +228,6 @@ class _MySignupPageState extends State<MySignupPage> {
                 child: Container(
                   height: 50,
                   margin: const EdgeInsets.all(10.0),
-                  //alignment: const Alignment(0, 0),
-                  //color: Colors.blue,
                   child: TextFormField(
                     controller: myPassword,
                     validator: (value) {
@@ -260,8 +248,6 @@ class _MySignupPageState extends State<MySignupPage> {
                 child: Container(
                   height: 50,
                   margin: const EdgeInsets.all(10.0),
-                  //alignment: const Alignment(0, 0),
-                  //color: Colors.blue,
                   child: TextFormField(
                     controller: remyPassword,
                     validator: (value) {

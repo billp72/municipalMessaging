@@ -37,15 +37,6 @@ class Login extends StatelessWidget {
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -161,7 +152,6 @@ class _MyHomePageState extends State<MyLoginPage> {
                   margin: const EdgeInsets.all(10.0),
                   child: ElevatedButton(
                     onPressed: () async {
-                      // ignore: avoid_print
                       if (_formKey.currentState!.validate()) {
                         String text =
                             await login(myEmail.text, myPassword.text);
@@ -201,7 +191,6 @@ class _MyHomePageState extends State<MyLoginPage> {
         child: Container(
           height: 80,
           alignment: const Alignment(0, 0),
-          //color: Colors.green,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.fromLTRB(55, 18, 55, 18)),
@@ -221,8 +210,6 @@ class _MyHomePageState extends State<MyLoginPage> {
         child: Container(
             height: 80,
             alignment: const Alignment(0, 0),
-            //margin: const EdgeInsets.fromLTRB(0, 17, 0, 0),
-            //color: Colors.orange,
             child: TextField(
                 decoration: InputDecoration(
               contentPadding: EdgeInsets.fromLTRB(15, 18, 55, 18),
