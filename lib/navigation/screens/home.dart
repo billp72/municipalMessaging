@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               _handleLogout();
             },
-            icon: const Icon(Icons.home_outlined),
+            icon: const Icon(Icons.logout),
           ),
           title: FutureBuilder<String>(
             future: userData(),

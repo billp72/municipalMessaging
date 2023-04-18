@@ -12,8 +12,8 @@ class AuthServices {
     final resp = await callable.call(<String, dynamic>{'uid': user.uid});
     var data = resp.data;
     if (data != null) {
-      data["uid"] = user["uid"];
-      data["email"] = user["email"];
+      data["uid"] = user.uid;
+      data["email"] = user.email;
       String json = jsonEncode(data);
       prefs.setString("USER", json);
     }
