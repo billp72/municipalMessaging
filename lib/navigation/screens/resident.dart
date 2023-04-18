@@ -94,6 +94,7 @@ class _MySignupPageState extends State<MySignupPage> {
       final theclaim = await callclaims.call(<String, dynamic>{'uid': u?.uid});
       var data = theclaim.data;
       data["uid"] = u?.uid;
+      data["city"] = city;
 
       String json = jsonEncode(data);
 

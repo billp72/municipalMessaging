@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +24,16 @@ class _MyHomePageState extends State<MyHomePage> {
       FirebaseFunctions.instance.httpsCallable('getUserAlerts');
   dynamic _username;
 
+  Future<String> userData() async {
+    final u = await state.getMap("USER");
+    return u["city"];
+  }
+
   _formatListTypes(int i, data) {
     DateTime? myDate;
     try {
       myDate = data[i]["date"]; //.toDate();
     } catch (e) {
-      // ignore: avoid_print
       myDate = DateTime.now();
     }
     return i == 0
@@ -86,7 +92,19 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             icon: const Icon(Icons.home_outlined),
           ),
-          title: const Text("Alarm List"),
+          title: FutureBuilder<String>(
+            future: userData(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final tit = snapshot.data!;
+                return Text('Alerts for $tit');
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return const Text('Loading...');
+              }
+            },
+          ),
         ),
         body: FutureBuilder(
             builder: (context, alertSnap) {

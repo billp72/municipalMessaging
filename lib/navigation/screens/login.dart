@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -57,15 +57,21 @@ class _MyHomePageState extends State<MyLoginPage> {
     final AuthServices auth = AuthServices();
     final HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('getCustomClaim');
+    final HttpsCallable user =
+        FirebaseFunctions.instance.httpsCallable('getUserDetails');
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final isAuth = await auth.signInWithEmailAndPassword(email, password);
-    // ignore: avoid_print
     if (isAuth != null) {
       final resp = await callable.call(<String, dynamic>{'uid': isAuth});
+      final u = await user.call(<String, dynamic>{
+        'uid': isAuth,
+        'municipality': resp.data['municipality']
+      });
 
       var data = resp.data;
       data["uid"] = isAuth;
+      data["city"] = u.data["city"];
 
       String json = jsonEncode(data);
 
