@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyDetailPage> {
             },
             icon: const Icon(Icons.home_filled),
           ),
-          title: Text(alert),
+          title: Text('$alert history & edit'),
         ),
         body: Column(children: [
           Container(
