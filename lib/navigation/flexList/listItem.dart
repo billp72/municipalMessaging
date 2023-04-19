@@ -31,8 +31,9 @@ class MessageItem implements ListItem {
   final String sender;
   final String body;
   final String type;
+  final String historyID;
 
-  MessageItem(this.sender, this.body, this.type);
+  MessageItem(this.sender, this.body, this.type, this.historyID);
 
   @override
   Widget buildTitle(BuildContext context) => Text(sender,
