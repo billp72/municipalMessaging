@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyDetailPage> {
     }
  
     return i == 0
-        ? HeadingItem('Recent Messages')
+        ? HeadingItem('Message History')
         : MessageItem(
             'Subscribed to: ${data[i]["type"].toUpperCase()}',
             'Recieve ${data[i]["frequency"]} messages. Last sent $myDate',
