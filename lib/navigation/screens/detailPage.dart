@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../../getUserFromPreference.dart';
 import '../flexList/listItem.dart';
 
+
 class MyDetailPage extends StatefulWidget {
   final String alert;
 
@@ -33,7 +34,7 @@ class _MyHomePageState extends State<MyDetailPage> {
 
   Future<String> userData() async {
     final u = await state.getMap("USER");
-    return u["city"];
+    return u;
   }
 
   _formatListTypes(int i, data) {
@@ -43,10 +44,13 @@ class _MyHomePageState extends State<MyDetailPage> {
     } catch (e) {
       myDate = DateTime.now();
     }
+ 
     return i == 0
-        ? HeadingItem('Click to add an alert')
-        : MessageItem('Subscribed to: ${data[i]["type"].toUpperCase()}',
-            'Recieve ${data[i]["frequency"]} messages. Last sent $myDate', "");
+        ? HeadingItem('Recent Messages')
+        : MessageItem(
+            'Subscribed to: ${data[i]["type"].toUpperCase()}',
+            'Recieve ${data[i]["frequency"]} messages. Last sent $myDate',
+            '');
   }
 
   Future _loadUserInfo() async {
@@ -74,58 +78,58 @@ class _MyHomePageState extends State<MyDetailPage> {
             onPressed: () {
               _handleBack();
             },
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.home_filled),
           ),
-          title: FutureBuilder<String>(
-            future: userData(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final tit = snapshot.data!;
-                return Text('Alerts for $tit');
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return const Text('Loading...');
-              }
-            },
-          ),
+          title: Text(alert),
         ),
-        body: FutureBuilder(
-            builder: (context, alertSnap) {
-              if (alertSnap.connectionState == ConnectionState.waiting &&
-                  !alertSnap.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (!alertSnap.hasData || alertSnap.data.length == 0) {
-                return Center(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                      IconButton(
-                          iconSize: 150,
-                          icon: const Icon(
-                            Icons.add_alarm_rounded,
-                            color: Colors.green,
-                            size: 150.0,
-                          ),
-                          onPressed: () {}),
-                      const Text(
-                        "Click to add alarm",
-                      )
-                    ]));
-              }
-              return ListView.builder(
-                itemCount: alertSnap.data?.length,
-                itemBuilder: (context, index) {
-                  final item = alertSnap.data?[index];
+        body: Column(children: [
+          Container(
+            height: 200,
+            width: double.infinity,
+            color: Colors.blue,
+            child: const Center(
+              child: Text('Container 1'),
+            ),
+          ),
+          Flexible(
+            child: FutureBuilder(
+              builder: (context, alertSnap) {
+                if (alertSnap.connectionState == ConnectionState.waiting &&
+                    !alertSnap.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (!alertSnap.hasData || alertSnap.data?.length == 0) {
+                  print(alertSnap);
+                  return Center(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                        IconButton(
+                            iconSize: 150,
+                            icon: const Icon(
+                              Icons.add_alarm_rounded,
+                              color: Colors.green,
+                              size: 150.0,
+                            ),
+                            onPressed: () {}),
+                        const Text(
+                          "No history for this alert",
+                        )
+                      ]));
+                }
+                return ListView.builder(
+                  itemCount: alertSnap.data?.length,
+                  itemBuilder: (context, index) {
+                    final item = alertSnap.data?[index];
 
-                  return ListTile(
-                    title: item.buildTitle(context),
-                    subtitle: item.buildSubtitle(context),
-                    onTap: () {},
-                  );
-                },
-              );
-            },
-            future: _loadUserInfo()));
+                    return ListTile(
+                      title: item.buildTitle(context),
+                      subtitle: item.buildSubtitle(context),
+                      onTap: () {},
+                    );
+                  },
+                );
+              },
+              future: _loadUserInfo()))
+        ]));
   }
 }

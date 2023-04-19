@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../getUserFromPreference.dart';
 import '../flexList/listItem.dart';
 import 'createAlert.dart';
-//import 'detailPage.dart';
+import 'detailPage.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -67,12 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void _selectPage(item, int index) {
     if (index > 0) {
       print(item);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => MyDetailPage(alert: item),
-      //   ),
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyDetailPage(alert: item, title: '',),
+        ),
+      );
     } else {
       Navigator.push(
         context,
@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
               if (alertSnap.connectionState == ConnectionState.waiting &&
                   !alertSnap.hasData) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (!alertSnap.hasData) {
+              } else if (!alertSnap.hasData || alertSnap.data?.length == 0) {
                 return Center(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
