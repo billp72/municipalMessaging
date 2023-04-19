@@ -16,10 +16,11 @@ class HeadingItem implements ListItem {
 
   @override
   Widget buildTitle(BuildContext context) {
-    return Text(heading, style: const TextStyle(
-        fontSize: 24,
-        color: Colors.red,
-    ));
+    return Text(heading,
+        style: const TextStyle(
+          fontSize: 24,
+          color: Colors.red,
+        ));
   }
 
   @override
@@ -29,8 +30,9 @@ class HeadingItem implements ListItem {
 class MessageItem implements ListItem {
   final String sender;
   final String body;
+  final String type;
 
-  MessageItem(this.sender, this.body);
+  MessageItem(this.sender, this.body, this.type);
 
   @override
   Widget buildTitle(BuildContext context) => Text(sender,
