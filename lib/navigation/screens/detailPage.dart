@@ -1,11 +1,6 @@
-// ignore_for_file: avoid_print
-
-//import 'dart:html';
-
+// ignore: file_names
 import 'package:cloud_functions/cloud_functions.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 import '../../getUserFromPreference.dart';
 import '../flexList/listItem.dart';
 
