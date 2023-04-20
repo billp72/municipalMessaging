@@ -123,21 +123,20 @@ class _MyHomePageState extends State<MyDetailPage> {
                           ));
                         }
                         final item = alertSnap.data;
+
                         return Form(
                             child: ResponsiveGridRow(children: [
                           ResponsiveGridCol(
-                            xs: 12,
-                            md: 4,
-                            child: Text(item.type)),
+                              xs: 12, md: 4, child: Text(item["type"])),
                           ResponsiveGridCol(
                             xs: 12,
                             md: 4,
-                            child: const Text("test"),
+                            child: Text(item["delivery"]),
                           ),
                           ResponsiveGridCol(
                             xs: 12,
                             md: 4,
-                            child: const Text("test 2"),
+                            child: Text(item["frequency"]),
                           ),
                         ]));
                       },
