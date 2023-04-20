@@ -78,7 +78,6 @@ class MyDropdownState extends State<MyDropdown>
     // ignore: avoid_print
     //widget.key?.currentState?.reset();
     // ignore: avoid_print
-    //print();
   }
 
   //bool onDropdownChanged = false;

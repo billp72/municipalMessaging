@@ -117,7 +117,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: FutureBuilder(
             builder: (context, alertSnap) {
-              print(alertSnap);
               if (alertSnap.connectionState == ConnectionState.waiting &&
                   !alertSnap.hasData) {
                 return const Center(child: CircularProgressIndicator());
