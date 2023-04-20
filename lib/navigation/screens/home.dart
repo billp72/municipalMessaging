@@ -36,14 +36,15 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       myDate = DateTime.now();
     }
-    final String id = data["historyID"] ? data["historyID"] : '';
+    //final String id = data[i]["historyID"] ? data[i]["historyID"] : '';
+    print(data);
     return i == 0
         ? HeadingItem('Click to add an alert')
         : MessageItem(
             'Subscribed to: ${data[i]["type"].toUpperCase()}',
             'Recieve ${data[i]["frequency"]} messages. Last sent $myDate',
             data[i]["type"],
-            id);
+            data[i]["historyID"]);
   }
 
   Future _loadUserInfo() async {
@@ -143,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 itemCount: alertSnap.data?.length,
                 itemBuilder: (context, index) {
                   final item = alertSnap.data?[index];
-
+  
                   return ListTile(
                     title: item.buildTitle(context),
                     subtitle: item.buildSubtitle(context),
