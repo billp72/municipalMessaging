@@ -116,7 +116,7 @@ class _MyHomePageState extends State<MyDetailPage> {
                           return const Center(
                               child: CircularProgressIndicator());
                         } else if (!alertSnap.hasData ||
-                            alertSnap.data.length == 0) {
+                            alertSnap.data?.length == 0) {
                           return const Center(
                               child: Text(
                             "Something bad happened",

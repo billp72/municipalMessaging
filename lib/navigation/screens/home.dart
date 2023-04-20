@@ -121,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
               if (alertSnap.connectionState == ConnectionState.waiting &&
                   !alertSnap.hasData) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (!alertSnap.hasData) {
+              } else if (!alertSnap.hasData || alertSnap.data?.length == 0) {
                 return Center(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
