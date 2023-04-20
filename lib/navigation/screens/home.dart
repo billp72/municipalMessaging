@@ -36,15 +36,15 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       myDate = DateTime.now();
     }
-    //final String id = data[i]["historyID"] ? data[i]["historyID"] : '';
-    print(data);
+    final String id = data[i]["historyID"] ?? 'srggtrt';
+    final String type = data[i]["type"] ?? 'fff';
     return i == 0
         ? HeadingItem('Click to add an alert')
         : MessageItem(
             'Subscribed to: ${data[i]["type"].toUpperCase()}',
             'Recieve ${data[i]["frequency"]} messages. Last sent $myDate',
-            data[i]["type"],
-            data[i]["historyID"]);
+            type,
+            id);
   }
 
   Future _loadUserInfo() async {
@@ -117,10 +117,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: FutureBuilder(
             builder: (context, alertSnap) {
+              print(alertSnap);
               if (alertSnap.connectionState == ConnectionState.waiting &&
                   !alertSnap.hasData) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (!alertSnap.hasData || alertSnap.data?.length == 0) {
+              } else if (!alertSnap.hasData) {
                 return Center(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
