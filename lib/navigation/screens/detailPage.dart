@@ -152,16 +152,13 @@ class _MyHomePageState extends State<MyDetailPage> {
                       return Center(
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                            IconButton(
-                                iconSize: 150,
-                                icon: const Icon(
-                                  Icons.add_alarm_rounded,
-                                  color: Colors.green,
-                                  size: 150.0,
-                                ),
-                                onPressed: () {}),
-                            const Text(
+                              children: const <Widget>[
+                            Icon(
+                              Icons.add_alarm_rounded,
+                              color: Colors.green,
+                              size: 150.0,
+                            ),
+                            Text(
                               "No history for this alert",
                             )
                           ]));
