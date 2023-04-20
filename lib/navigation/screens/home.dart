@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final String id = data[i]["historyID"] ?? 'srggtrt';
     final String type = data[i]["type"] ?? 'fff';
     return i == 0
-        ? HeadingItem('Click to add an alert')
+        ? HeadingItem('Click to add an alert', type, id)
         : MessageItem(
             'Subscribed to: ${data[i]["type"].toUpperCase()}',
             'Recieve ${data[i]["frequency"]} messages. Last sent $myDate',
@@ -134,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             size: 150.0,
                           ),
                           onPressed: () {
-                            _selectPage('', '', 0);
+                            _selectPage('none', 'none', 0);
                           }),
                       const Text(
                         "Click to add alarm",
@@ -145,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 itemCount: alertSnap.data?.length,
                 itemBuilder: (context, index) {
                   final item = alertSnap.data?[index];
-  
+
                   return ListTile(
                     title: item.buildTitle(context),
                     subtitle: item.buildSubtitle(context),

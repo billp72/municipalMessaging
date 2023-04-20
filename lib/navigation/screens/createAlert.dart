@@ -138,7 +138,8 @@ class _MyHomePageState extends State<CreateAlert> {
                   if (alertSnap.connectionState == ConnectionState.waiting &&
                       !alertSnap.hasData) {
                     return const Center(child: CircularProgressIndicator());
-                  } else if (!alertSnap.hasData || alertSnap.data.length == 0) {
+                  } else if (!alertSnap.hasData ||
+                      alertSnap.data?.length == 0) {
                     return const Center(
                         child: Text(
                       "No alert types have been added yet",

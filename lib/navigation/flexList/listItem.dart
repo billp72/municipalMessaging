@@ -11,8 +11,10 @@ abstract class ListItem {
 
 class HeadingItem implements ListItem {
   final String heading;
+  final String type;
+  final String historyID;
 
-  HeadingItem(this.heading);
+  HeadingItem(this.heading, this.type, this.historyID);
 
   @override
   Widget buildTitle(BuildContext context) {
