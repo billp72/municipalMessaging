@@ -1,8 +1,11 @@
 // ignore: file_names
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_grid/responsive_grid.dart';
 import '../../getUserFromPreference.dart';
+import '../dropdownMenu/dropdownmenu.dart';
 import '../flexList/listItem.dart';
+import '../icons/my_icon.dart';
 
 class MyDetailPage extends StatefulWidget {
   final String alert;
@@ -20,6 +23,7 @@ class MyDetailPage extends StatefulWidget {
   @override
   // ignore: no_logic_in_create_state
   State<MyDetailPage> createState() =>
+      // ignore: no_logic_in_create_state
       _MyHomePageState(alert: alert, historyID: historyID);
 }
 
@@ -90,13 +94,52 @@ class _MyHomePageState extends State<MyDetailPage> {
         ),
         body: Column(children: [
           Container(
-            height: 200,
-            width: double.infinity,
-            color: Colors.blue,
-            child: const Center(
-              child: Text('Container 1'),
-            ),
-          ),
+              height: 200,
+              width: double.infinity,
+              color: Colors.blue,
+              child: Form(
+                  child: ResponsiveGridRow(children: [
+                ResponsiveGridCol(
+                    xs: 12,
+                    md: 4,
+                    child: CheckboxListTile(
+                      title: '', //widget.buildSubtitle(),
+                      value: '', //isChecked,
+                      secondary: Icon(MyIconData(hex),
+                          color: Color(color), size: 40.0),
+                      contentPadding: const EdgeInsets.only(
+                        right: 100.0,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          // isChecked = value!;
+                          // if (isChecked) {
+                          //   dropdowns["type"] = body;
+                          // } else {
+                          //   dropdowns["frequency"] = frequencyDefault;
+                          //   dropdowns["delivery"] = deliveryDefault;
+                          //   submitAlert({"type": body});
+                          // }
+                        });
+                      },
+                    )),
+                ResponsiveGridCol(
+                    xs: 12,
+                    md: 4,
+                    child: MyDropdown(
+                        selected: "frequency",
+                        drop: dropdowns,
+                        enable: enabled,
+                        onSelectedValueChange: _setSelectedValue)),
+                ResponsiveGridCol(
+                    xs: 12,
+                    md: 4,
+                    child: MyDropdown(
+                        selected: "delivery",
+                        drop: dropdowns,
+                        enable: enabled,
+                        onSelectedValueChange: _setSelectedValue))
+              ]))),
           Flexible(
               child: FutureBuilder(
                   builder: (context, alertSnap) {
@@ -105,7 +148,6 @@ class _MyHomePageState extends State<MyDetailPage> {
                       return const Center(child: CircularProgressIndicator());
                     } else if (!alertSnap.hasData ||
                         alertSnap.data?.length == 0) {
-                      print(alertSnap);
                       return Center(
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
