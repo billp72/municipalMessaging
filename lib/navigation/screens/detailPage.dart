@@ -3,7 +3,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import '../../getUserFromPreference.dart';
-import '../dropdownMenu/dropdownmenu.dart';
+//import '../dropdownMenu/dropdownmenu.dart';
 import '../flexList/listItem.dart';
 import '../icons/my_icon.dart';
 
@@ -32,9 +32,13 @@ class _MyHomePageState extends State<MyDetailPage> {
   final String historyID;
 
   final state = LocalState();
-  final HttpsCallable callable =
-      FirebaseFunctions.instance.httpsCallable('getUserAlerts');
+  final HttpsCallable historycallable =
+      FirebaseFunctions.instance.httpsCallable('getHistory');
+  final HttpsCallable selectioncallable =
+      FirebaseFunctions.instance.httpsCallable('getSelection');
   dynamic _username;
+  final List<Map<String, dynamic>> submittedValues = [];
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   _MyHomePageState({required this.alert, required this.historyID});
 
@@ -60,13 +64,18 @@ class _MyHomePageState extends State<MyDetailPage> {
             '');
   }
 
+  Future _loadFormSelection() async {
+    _username = await state.getMap("USER");
+    final resp = await selectioncallable
+        .call(<String, dynamic>{'type': alert, 'uid': _username['uid']});
+
+    return resp.data;
+  }
+
   Future _loadUserInfo() async {
     _username = await state.getMap("USER");
-    final resp = await callable.call(<String, dynamic>{
-      'type': alert,
-      historyID: historyID,
-      'uid': _username['uid']
-    });
+    final resp = await historycallable
+        .call(<String, dynamic>{historyID: historyID, 'uid': _username['uid']});
     final data = resp.data;
     final items =
         List<ListItem>.generate(data.length, (i) => _formatListTypes(i, data));
@@ -93,53 +102,46 @@ class _MyHomePageState extends State<MyDetailPage> {
           title: Text('$alert history & edit'),
         ),
         body: Column(children: [
-          Container(
+          SizedBox(
               height: 200,
               width: double.infinity,
-              color: Colors.blue,
+              //color: Colors.blue,
               child: Form(
-                  child: ResponsiveGridRow(children: [
-                ResponsiveGridCol(
-                    xs: 12,
-                    md: 4,
-                    child: CheckboxListTile(
-                      title: '', //widget.buildSubtitle(),
-                      value: '', //isChecked,
-                      secondary: Icon(MyIconData(hex),
-                          color: Color(color), size: 40.0),
-                      contentPadding: const EdgeInsets.only(
-                        right: 100.0,
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          // isChecked = value!;
-                          // if (isChecked) {
-                          //   dropdowns["type"] = body;
-                          // } else {
-                          //   dropdowns["frequency"] = frequencyDefault;
-                          //   dropdowns["delivery"] = deliveryDefault;
-                          //   submitAlert({"type": body});
-                          // }
-                        });
+                  key: _formKey,
+                  child: FutureBuilder(
+                      builder: (context, alertSnap) {
+                        if (alertSnap.connectionState ==
+                                ConnectionState.waiting &&
+                            !alertSnap.hasData) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (!alertSnap.hasData ||
+                            alertSnap.data.length == 0) {
+                          return const Center(
+                              child: Text(
+                            "Something bad happened",
+                          ));
+                        }
+                        final item = alertSnap.data;
+                        return Form(
+                            child: ResponsiveGridRow(children: [
+                          ResponsiveGridCol(
+                            xs: 12,
+                            md: 4,
+                            child: Text(item.type)),
+                          ResponsiveGridCol(
+                            xs: 12,
+                            md: 4,
+                            child: const Text("test"),
+                          ),
+                          ResponsiveGridCol(
+                            xs: 12,
+                            md: 4,
+                            child: const Text("test 2"),
+                          ),
+                        ]));
                       },
-                    )),
-                ResponsiveGridCol(
-                    xs: 12,
-                    md: 4,
-                    child: MyDropdown(
-                        selected: "frequency",
-                        drop: dropdowns,
-                        enable: enabled,
-                        onSelectedValueChange: _setSelectedValue)),
-                ResponsiveGridCol(
-                    xs: 12,
-                    md: 4,
-                    child: MyDropdown(
-                        selected: "delivery",
-                        drop: dropdowns,
-                        enable: enabled,
-                        onSelectedValueChange: _setSelectedValue))
-              ]))),
+                      future: _loadFormSelection()))),
           Flexible(
               child: FutureBuilder(
                   builder: (context, alertSnap) {
