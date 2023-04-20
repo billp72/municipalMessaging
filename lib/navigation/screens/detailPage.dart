@@ -102,10 +102,10 @@ class _MyHomePageState extends State<MyDetailPage> {
           title: Text('$alert history & edit'),
         ),
         body: Column(children: [
-          SizedBox(
+          Container(
               height: 200,
               width: double.infinity,
-              //color: Colors.blue,
+              color: Colors.blue,
               child: Form(
                   key: _formKey,
                   child: FutureBuilder(
