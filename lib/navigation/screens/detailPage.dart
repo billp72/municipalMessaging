@@ -3,7 +3,6 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import '../../getUserFromPreference.dart';
-//import '../dropdownMenu/dropdownmenu.dart';
 import '../flexList/listItem.dart';
 import '../icons/my_icon.dart';
 
@@ -103,7 +102,7 @@ class _MyHomePageState extends State<MyDetailPage> {
         ),
         body: Column(children: [
           Container(
-              height: 150,
+              height: 180,
               width: double.infinity,
               color: Colors.blue,
               child: Form(
@@ -123,21 +122,92 @@ class _MyHomePageState extends State<MyDetailPage> {
                           ));
                         }
                         final item = alertSnap.data;
-
+                        final type = item['type'];
                         return Form(
                             child: ResponsiveGridRow(children: [
                           ResponsiveGridCol(
-                              xs: 12, md: 4, child: Text(item["type"])),
+                              xs: 12,
+                              md: 4,
+                              child: CheckboxListTile(
+                                title: Text(
+                                    'Mute $type Alert'), //widget.buildSubtitle(),
+                                value: true, //isChecked,
+                                secondary: const Icon(MyIconData(0xf04b6),
+                                    color: Color(0xfffce4ec), size: 40.0),
+                                contentPadding: const EdgeInsets.only(
+                                  right: 100.0,
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    // isChecked = value!;
+                                    // if (isChecked) {
+                                    //   dropdowns["type"] = body;
+                                    // } else {
+                                    //   dropdowns["frequency"] = frequencyDefault;
+                                    //   dropdowns["delivery"] = deliveryDefault;
+                                    //   submitAlert({"type": body});
+                                    // }
+                                  });
+                                },
+                              )),
                           ResponsiveGridCol(
                             xs: 12,
                             md: 4,
-                            child: Text(item["delivery"]),
+                            child: DropdownButtonFormField<String>(
+                              value: 'select',
+                              onChanged: (String? value) {
+                                setState(() {
+                                  //onSelectedValueChange(value!, selected);
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null ||
+                                    value == 'Select delivery') {
+                                  return 'Please select an option';
+                                }
+                                return null;
+                              },
+                              items: [
+                                'select',
+                                'one',
+                                'two',
+                                'three'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                    value: value, child: Text(value));
+                              }).toList(),
+                            ),
                           ),
                           ResponsiveGridCol(
                             xs: 12,
                             md: 4,
-                            child: Text(item["frequency"]),
+                            child: DropdownButtonFormField<String>(
+                              value: 'select',
+                              onChanged: (String? value) {
+                                setState(() {
+                                  //onSelectedValueChange(value!, selected);
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null ||
+                                    value == 'Select delivery') {
+                                  return 'Please select an option';
+                                }
+                                return null;
+                              },
+                              items: [
+                                'select',
+                                'four',
+                                'five',
+                                'six'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                    value: value, child: Text(value));
+                              }).toList(),
+                            ),
                           ),
+                          ResponsiveGridCol(
+                              xs: 12, md: 4, child: const Text('Delete Alert')),
                         ]));
                       },
                       future: _loadFormSelection()))),
