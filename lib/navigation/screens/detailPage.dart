@@ -29,12 +29,14 @@ class MyDetailPage extends StatefulWidget {
 class _MyHomePageState extends State<MyDetailPage> {
   final String alert;
   final String historyID;
-
+  bool isChecked = false;
   final state = LocalState();
   final HttpsCallable historycallable =
       FirebaseFunctions.instance.httpsCallable('getHistory');
   final HttpsCallable selectioncallable =
       FirebaseFunctions.instance.httpsCallable('getSelection');
+  final HttpsCallable callableAdd =
+      FirebaseFunctions.instance.httpsCallable('addAlerts');
   dynamic _username;
   final List<Map<String, dynamic>> submittedValues = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -44,6 +46,16 @@ class _MyHomePageState extends State<MyDetailPage> {
   Future<String> userData() async {
     final u = await state.getMap("USER");
     return u;
+  }
+
+  final Map<String, String> dropdowns = {
+    "frequency": "",
+    "delivery": "",
+    "type": ""
+  };
+
+  void onSelectedValueChange(String value, String type) {
+    dropdowns[type] = value;
   }
 
   _formatListTypes(int i, data) {
@@ -88,23 +100,55 @@ class _MyHomePageState extends State<MyDetailPage> {
         context, '/home', ModalRoute.withName('/home'));
   }
 
+  void _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      String message = "Processing submission";
+      if (submittedValues.isEmpty) {
+        message = "No alerts selected";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+
+      final resp =
+          await callableAdd.call(<String, dynamic>{'data': submittedValues});
+      final data = resp.data;
+      if (data) {
+        _handleBack();
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Something went wrong. Alerts not added.')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              _handleBack();
-            },
-            icon: const Icon(Icons.home_filled),
-          ),
-          title: Text('$alert history & edit'),
+          //automaticallyImplyLeading: false,
+          actions: [
+            Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 110.0, 0),
+                child: IconButton(
+                  icon: const Icon(Icons.add, size: 40.0),
+                  onPressed: _submitForm,
+                )),
+          ],
+          title: const Text("Edit & History"),
         ),
         body: Column(children: [
-          Container(
-              height: 180,
+          SizedBox(
+              height: 200,
               width: double.infinity,
-              color: Colors.blue,
+              //color: Colors.blue,
               child: Form(
                   key: _formKey,
                   child: FutureBuilder(
@@ -123,92 +167,89 @@ class _MyHomePageState extends State<MyDetailPage> {
                         }
                         final item = alertSnap.data;
                         final type = item['type'];
+                        dropdowns["type"] = type;
+
                         return Form(
-                            child: ResponsiveGridRow(children: [
-                          ResponsiveGridCol(
-                              xs: 12,
-                              md: 4,
-                              child: CheckboxListTile(
-                                title: Text(
-                                    'Mute $type Alert'), //widget.buildSubtitle(),
-                                value: true, //isChecked,
-                                secondary: const Icon(MyIconData(0xf04b6),
-                                    color: Color(0xfffce4ec), size: 40.0),
-                                contentPadding: const EdgeInsets.only(
-                                  right: 100.0,
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    // isChecked = value!;
-                                    // if (isChecked) {
-                                    //   dropdowns["type"] = body;
-                                    // } else {
-                                    //   dropdowns["frequency"] = frequencyDefault;
-                                    //   dropdowns["delivery"] = deliveryDefault;
-                                    //   submitAlert({"type": body});
-                                    // }
-                                  });
-                                },
-                              )),
-                          ResponsiveGridCol(
-                            xs: 12,
-                            md: 4,
-                            child: DropdownButtonFormField<String>(
-                              value: 'select',
-                              onChanged: (String? value) {
-                                setState(() {
-                                  //onSelectedValueChange(value!, selected);
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null ||
-                                    value == 'Select delivery') {
-                                  return 'Please select an option';
-                                }
-                                return null;
-                              },
-                              items: [
-                                'select',
-                                'one',
-                                'two',
-                                'three'
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                    value: value, child: Text(value));
-                              }).toList(),
-                            ),
-                          ),
-                          ResponsiveGridCol(
-                            xs: 12,
-                            md: 4,
-                            child: DropdownButtonFormField<String>(
-                              value: 'select',
-                              onChanged: (String? value) {
-                                setState(() {
-                                  //onSelectedValueChange(value!, selected);
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null ||
-                                    value == 'Select delivery') {
-                                  return 'Please select an option';
-                                }
-                                return null;
-                              },
-                              items: [
-                                'select',
-                                'four',
-                                'five',
-                                'six'
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                    value: value, child: Text(value));
-                              }).toList(),
-                            ),
-                          ),
-                          ResponsiveGridCol(
-                              xs: 12, md: 4, child: const Text('Delete Alert')),
-                        ]));
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: ResponsiveGridRow(children: [
+                                  ResponsiveGridCol(
+                                      xs: 12,
+                                      md: 4,
+                                      child: CheckboxListTile(
+                                        title: Text('Check to mute $type'),
+                                        value: isChecked,
+                                        secondary: const Icon(
+                                            MyIconData(0xf04b6),
+                                            color: Color(0xfffce4ec),
+                                            size: 40.0),
+                                        contentPadding: const EdgeInsets.only(
+                                          right: 100.0,
+                                        ),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            isChecked = value!;
+                                          });
+                                        },
+                                      )),
+                                  ResponsiveGridCol(
+                                    xs: 12,
+                                    md: 4,
+                                    child: DropdownButtonFormField<String>(
+                                      value: item['delivery'],
+                                      onChanged: (String? value) {
+                                        setState(() {
+                                          onSelectedValueChange(
+                                              value!, 'delivery');
+                                        });
+                                      },
+                                      items: ['email', 'sms', 'text', 'push']
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                        return DropdownMenuItem<String>(
+                                            value: value, child: Text(value));
+                                      }).toList(),
+                                    ),
+                                  ),
+                                  ResponsiveGridCol(
+                                    xs: 12,
+                                    md: 4,
+                                    child: DropdownButtonFormField<String>(
+                                      value: item["frequency"],
+                                      onChanged: (String? value) {
+                                        setState(() {
+                                          onSelectedValueChange(
+                                              value!, 'frequency');
+                                        });
+                                      },
+                                      items: [
+                                        'all',
+                                        'daily',
+                                        'weekly',
+                                        'monthly'
+                                      ].map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                        return DropdownMenuItem<String>(
+                                            value: value, child: Text(value));
+                                      }).toList(),
+                                    ),
+                                  ),
+                                  ResponsiveGridCol(
+                                      xs: 12,
+                                      md: 4,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                10, 10, 10, 10),
+                                            backgroundColor: Colors.red),
+                                        child: const Text('DELETE ALERT',
+                                            style: TextStyle(
+                                              fontSize: 15.0,
+                                            )),
+                                        onPressed: () {},
+                                      )),
+                                ])));
                       },
                       future: _loadFormSelection()))),
           Flexible(

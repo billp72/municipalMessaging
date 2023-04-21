@@ -129,7 +129,7 @@ class _MyHomePageState extends State<CreateAlert> {
                   onPressed: _submitForm,
                 )),
           ],
-          title: const Text("Create Alert"),
+          title: const Text("Add Alert(s)"),
         ),
         body: Form(
             key: _formKey,
