@@ -154,6 +154,7 @@ class _MyHomePageState extends State<MyDetailPage> {
                         }
                         final item = alertSnap.data;
                         final type = item['type'];
+                        final mute = item['mute'] ?? false;
                         dropdowns["type"] = type;
 
                         return Form(
@@ -166,7 +167,7 @@ class _MyHomePageState extends State<MyDetailPage> {
                                       md: 4,
                                       child: CheckboxListTile(
                                         title: Text('Check to mute $type'),
-                                        value: isChecked,
+                                        value: mute,
                                         secondary: const Icon(
                                             MyIconData(0xf04b6),
                                             color: Color(0xfffce4ec),
