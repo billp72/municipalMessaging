@@ -59,13 +59,6 @@ class _MyHomePageState extends State<MyDetailPage> {
   }
 
   _formatListTypes(int i, data) {
-    DateTime? myDate;
-    try {
-      myDate = data[i]["date"]; //.toDate();
-    } catch (e) {
-      myDate = DateTime.now();
-    }
-
     return i == 0
         ? HeadingItem('Message History', '', '')
         : MessageItem('Subscribed to: ${data[i]["type"].toUpperCase()}',
