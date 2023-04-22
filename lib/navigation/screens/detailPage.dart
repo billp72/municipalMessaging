@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyDetailPage> {
   final HttpsCallable selectioncallable =
       FirebaseFunctions.instance.httpsCallable('getSelection');
   final HttpsCallable callableUpdate =
-      FirebaseFunctions.instance.httpsCallable('addAlerts');
+      FirebaseFunctions.instance.httpsCallable('updateAlert');
   dynamic _username;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -111,8 +111,8 @@ class _MyHomePageState extends State<MyDetailPage> {
         ),
       );
 
-      final resp =
-          await callableUpdate.call(<String, dynamic>{'data': dropdowns});
+      final resp = await callableUpdate
+          .call(<String, dynamic>{'uid': _username['uid'], 'data': dropdowns});
       final data = resp.data;
       if (data) {
         _handleBack();
