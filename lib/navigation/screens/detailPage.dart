@@ -154,7 +154,7 @@ class _MyHomePageState extends State<MyDetailPage> {
                         }
                         final item = alertSnap.data;
                         final type = item['type'];
-                        final mute = item['mute'] ?? false;
+                        bool mute = item['mute'] ?? false;
                         dropdowns["type"] = type;
 
                         return Form(
@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyDetailPage> {
                                         ),
                                         onChanged: (value) {
                                           setState(() {
-                                            isChecked = value!;
+                                            mute = value!;
                                             dropdowns["mute"] = isChecked;
                                           });
                                         },
