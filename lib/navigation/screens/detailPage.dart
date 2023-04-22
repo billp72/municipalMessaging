@@ -29,7 +29,6 @@ class MyDetailPage extends StatefulWidget {
 class _MyHomePageState extends State<MyDetailPage> {
   final String alert;
   final String historyID;
-  bool isChecked = false;
   final state = LocalState();
   final HttpsCallable historycallable =
       FirebaseFunctions.instance.httpsCallable('getHistory');
@@ -39,7 +38,7 @@ class _MyHomePageState extends State<MyDetailPage> {
       FirebaseFunctions.instance.httpsCallable('updateAlert');
   dynamic _username;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  dynamic mute;
   _MyHomePageState({required this.alert, required this.historyID});
 
   Future<String> userData() async {
@@ -154,7 +153,7 @@ class _MyHomePageState extends State<MyDetailPage> {
                         }
                         final item = alertSnap.data;
                         final type = item['type'];
-                        bool mute = item['mute'] ?? false;
+                        mute = item['mute'] ?? false ? item['mute'] : mute;
                         dropdowns["type"] = type;
 
                         return Form(
@@ -178,9 +177,10 @@ class _MyHomePageState extends State<MyDetailPage> {
                                         onChanged: (value) {
                                           setState(() {
                                             mute = value!;
-                                            dropdowns["mute"] = isChecked;
+                                            dropdowns["mute"] = mute;
                                           });
                                         },
+                                        //enabled: true,
                                       )),
                                   ResponsiveGridCol(
                                     xs: 12,
