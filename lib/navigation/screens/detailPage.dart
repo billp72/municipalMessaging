@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyDetailPage> {
       FirebaseFunctions.instance.httpsCallable('updateAlert');
   dynamic _username;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  dynamic mute;
+
   _MyHomePageState({required this.alert, required this.historyID});
 
   Future<String> userData() async {
@@ -46,6 +46,7 @@ class _MyHomePageState extends State<MyDetailPage> {
     return u;
   }
 
+  bool mute = false;
   final Map<String, Object> dropdowns = {
     "frequency": "",
     "delivery": "",
@@ -153,8 +154,12 @@ class _MyHomePageState extends State<MyDetailPage> {
                         }
                         final item = alertSnap.data;
                         final type = item['type'];
-                        mute = item['mute'] ?? false ? item['mute'] : mute;
+                        mute = item['mute'] ?? false
+                            ? item['mute']
+                            : dropdowns["mute"];
                         dropdowns["type"] = type;
+                        dropdowns["frequency"] = item["frequency"];
+                        dropdowns["delivery"] = item["delivery"];
 
                         return Form(
                             child: Padding(
@@ -177,7 +182,7 @@ class _MyHomePageState extends State<MyDetailPage> {
                                         onChanged: (value) {
                                           setState(() {
                                             mute = value!;
-                                            dropdowns["mute"] = mute;
+                                            dropdowns["mute"] = value;
                                           });
                                         },
                                         //enabled: true,
