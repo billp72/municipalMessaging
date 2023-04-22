@@ -35,10 +35,9 @@ class _MyHomePageState extends State<MyDetailPage> {
       FirebaseFunctions.instance.httpsCallable('getHistory');
   final HttpsCallable selectioncallable =
       FirebaseFunctions.instance.httpsCallable('getSelection');
-  final HttpsCallable callableAdd =
+  final HttpsCallable callableUpdate =
       FirebaseFunctions.instance.httpsCallable('addAlerts');
   dynamic _username;
-  final List<Map<String, dynamic>> submittedValues = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   _MyHomePageState({required this.alert, required this.historyID});
@@ -48,10 +47,11 @@ class _MyHomePageState extends State<MyDetailPage> {
     return u;
   }
 
-  final Map<String, String> dropdowns = {
+  final Map<String, Object> dropdowns = {
     "frequency": "",
     "delivery": "",
-    "type": ""
+    "type": "",
+    "mute": false
   };
 
   void onSelectedValueChange(String value, String type) {
@@ -103,9 +103,6 @@ class _MyHomePageState extends State<MyDetailPage> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       String message = "Processing submission";
-      if (submittedValues.isEmpty) {
-        message = "No alerts selected";
-      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -115,7 +112,7 @@ class _MyHomePageState extends State<MyDetailPage> {
       );
 
       final resp =
-          await callableAdd.call(<String, dynamic>{'data': submittedValues});
+          await callableUpdate.call(<String, dynamic>{'data': dropdowns});
       final data = resp.data;
       if (data) {
         _handleBack();
@@ -123,7 +120,7 @@ class _MyHomePageState extends State<MyDetailPage> {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Something went wrong. Alerts not added.')),
+              content: Text('Something went wrong. Alerts not updated.')),
         );
       }
     }
@@ -190,6 +187,7 @@ class _MyHomePageState extends State<MyDetailPage> {
                                         onChanged: (value) {
                                           setState(() {
                                             isChecked = value!;
+                                            dropdowns["mute"] = isChecked;
                                           });
                                         },
                                       )),
