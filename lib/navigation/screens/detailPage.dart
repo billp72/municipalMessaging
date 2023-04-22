@@ -68,11 +68,8 @@ class _MyHomePageState extends State<MyDetailPage> {
 
     return i == 0
         ? HeadingItem('Message History', '', '')
-        : MessageItem(
-            'Subscribed to: ${data[i]["type"].toUpperCase()}',
-            'Recieve ${data[i]["frequency"]} messages. Last sent $myDate',
-            '',
-            '');
+        : MessageItem('Subscribed to: ${data[i]["type"].toUpperCase()}',
+            'Msg: ${data[i]["desc"]}', '', '');
   }
 
   Future _loadFormSelection() async {
