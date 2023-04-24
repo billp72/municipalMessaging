@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import '../dropdownMenu/dropdownmenu.dart';
+import '../../getDeviceInfo.dart';
 
 class Resident extends StatelessWidget {
   const Resident({Key? key, required this.title}) : super(key: key);
@@ -79,6 +80,7 @@ class _MySignupPageState extends State<MySignupPage> {
         FirebaseFunctions.instance.httpsCallable('getCustomClaim');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final isUser = FirebaseAuth.instance.currentUser;
+    final deviceID = await getDeviceId();
     final resp = await callable.call(<String, dynamic>{
       'uid': u?.uid,
       'city': city,
@@ -87,7 +89,7 @@ class _MySignupPageState extends State<MySignupPage> {
       'phone': phone,
       'name': name,
       'email': email,
-      'deviceId': ''
+      'deviceId': deviceID
     });
 
     if (resp.data != null && isUser != null) {
