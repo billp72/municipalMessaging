@@ -88,7 +88,7 @@ class _MySignupPageState extends State<MySignupPage> {
       'phone': phone,
       'name': name,
       'email': email,
-      'deviceId': deviceID
+      'token': deviceID
     });
 
     final isUser = FirebaseAuth.instance.currentUser;

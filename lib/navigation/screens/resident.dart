@@ -89,7 +89,7 @@ class _MySignupPageState extends State<MySignupPage> {
       'phone': phone,
       'name': name,
       'email': email,
-      'deviceId': deviceID
+      'token': deviceID
     });
 
     if (resp.data != null && isUser != null) {

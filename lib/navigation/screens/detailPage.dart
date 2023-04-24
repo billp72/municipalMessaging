@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyDetailPage> {
     await callableTest.call(<String, dynamic>{
       'topic': alert,
       'municipality': _username['municipality'],
-      'message': 'This is a test message for test purposes'
+      'payload': 'This is a test message for test purposes'
     });
   }
 
