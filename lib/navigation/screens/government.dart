@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../dropdownMenu/dropdownmenu.dart';
+import '../../getDeviceInfo.dart';
 
 class Government extends StatelessWidget {
   const Government({Key? key, required this.title}) : super(key: key);
@@ -78,6 +79,7 @@ class _MySignupPageState extends State<MySignupPage> {
     final HttpsCallable callclaims =
         FirebaseFunctions.instance.httpsCallable('getCustomClaim');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final deviceID = await getDeviceId();
     final resp = await callable.call(<String, dynamic>{
       'uid': u?.uid,
       'city': city,
@@ -86,7 +88,7 @@ class _MySignupPageState extends State<MySignupPage> {
       'phone': phone,
       'name': name,
       'email': email,
-      'deviceId': ''
+      'deviceId': deviceID
     });
 
     final isUser = FirebaseAuth.instance.currentUser;
