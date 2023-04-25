@@ -31,6 +31,26 @@ class _MyAdminPageState extends State<MyAdminPage> {
         context, '/login', ModalRoute.withName('/login'));
   }
 
+  Future loadTopics() async {
+
+      final _username = await state.getMap("USER");
+
+      List<Map<String, Object>> data1 = [
+      {"hex": 0xe23e, "body": "events", "color": 0xffef6c00},
+      {"hex": 0xe151, "body": "emergancy", "color": 0xffffca28},
+      {"hex": 0xe7b0, "body": "taxes", "color": 0xff90a4ae},
+      {"hex": 0xf05c1, "body": "ordinance", "color": 0xff78909c},
+      {"hex": 0xf4d5, "body": "employment", "color": 0xff01579b},
+      {"hex": 0xe4f0, "body": "publicworks", "color": 0xff004d40},
+      {"hex": 0xe757, "body": "road_closers", "color": 0xffd50000},
+      {"hex": 0xe189, "body": "construction", "color": 0xffff5722},
+      {"hex": 0xe087, "body": "announcements", "color": 0xfff48fb1},
+    ];
+
+    return data1;
+
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: no_leading_underscores_for_local_identifiers
@@ -117,7 +137,7 @@ class _MyAdminPageState extends State<MyAdminPage> {
               ),
             ]);
             },
-            future: userData(),
+            future: loadTopics(),
           )),
       ),
     ])
