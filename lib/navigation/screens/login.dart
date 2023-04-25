@@ -87,10 +87,10 @@ class _MyHomePageState extends State<MyLoginPage> {
 
   // ignore: use_build_context_synchronously
   void _handleNavigation(String route) {
-    if (route != '/admin') {
-      Navigator.pushNamedAndRemoveUntil(
-          context, route, ModalRoute.withName(route));
-    }
+    //if (route != '/admin') {
+    Navigator.pushNamedAndRemoveUntil(
+        context, route, ModalRoute.withName(route));
+    //}
   }
 
   @override
@@ -221,7 +221,7 @@ class _MyHomePageState extends State<MyLoginPage> {
               suffixIcon: IconButton(
                 icon: Icon(Icons.send),
                 onPressed: () {
-                  _handleNavigation('/admin');
+                  _handleNavigation('/municipality');
                 },
               ),
             ))),

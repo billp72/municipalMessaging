@@ -16,10 +16,17 @@ class MyAdminPage extends StatefulWidget {
 
 class _MyAdminPageState extends State<MyAdminPage> {
   final state = LocalState();
-
+  Map<String, dynamic>? selected;
   Future<String> userData() async {
     final u = await state.getMap("USER");
     return u["city"];
+  }
+
+  void broadcast(String title, String body, String link) {
+    if (selected!.isNotEmpty) {
+      // ignore: avoid_print
+      print(title);
+    }
   }
 
   void _handleLogout() async {
@@ -32,31 +39,35 @@ class _MyAdminPageState extends State<MyAdminPage> {
   }
 
   Future loadTopics() async {
+    final _username = await state.getMap("USER");
 
-      final _username = await state.getMap("USER");
-
-      List<Map<String, Object>> data1 = [
-      {"hex": 0xe23e, "body": "events", "color": 0xffef6c00},
-      {"hex": 0xe151, "body": "emergancy", "color": 0xffffca28},
-      {"hex": 0xe7b0, "body": "taxes", "color": 0xff90a4ae},
-      {"hex": 0xf05c1, "body": "ordinance", "color": 0xff78909c},
-      {"hex": 0xf4d5, "body": "employment", "color": 0xff01579b},
-      {"hex": 0xe4f0, "body": "publicworks", "color": 0xff004d40},
-      {"hex": 0xe757, "body": "road_closers", "color": 0xffd50000},
-      {"hex": 0xe189, "body": "construction", "color": 0xffff5722},
-      {"hex": 0xe087, "body": "announcements", "color": 0xfff48fb1},
+    List<Map<String, dynamic>> data1 = [
+      {"body": "events", "id": 1},
+      {"body": "emergancy", "id": 2},
+      {"body": "taxes", "id": 3},
+      {"body": "ordinance", "id": 4},
+      {"body": "employment", "id": 5},
+      {"body": "publicworks", "id": 6},
+      {"body": "road_closers", "id": 7},
+      {"body": "construction", "id": 8},
+      {"body": "announcements", "id": 9},
     ];
 
     return data1;
-
   }
 
   @override
   Widget build(BuildContext context) {
+    final title = TextEditingController();
+    final body = TextEditingController();
+    final link = TextEditingController();
     // ignore: no_leading_underscores_for_local_identifiers
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    List<Map<String, dynamic>> dropdown = [
+      {"body": "select", "id": 0}
+    ];
     return Scaffold(
-      appBar: AppBar(
+        appBar: AppBar(
           leading: IconButton(
             onPressed: () {
               _handleLogout();
@@ -67,8 +78,8 @@ class _MyAdminPageState extends State<MyAdminPage> {
             future: userData(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                final tit = snapshot.data!;
-                return Text('Alerts for $tit');
+                final d = snapshot.data!;
+                return Text('Admin of $d');
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
@@ -78,69 +89,105 @@ class _MyAdminPageState extends State<MyAdminPage> {
           ),
         ),
         body: ResponsiveGridRow(children: [
-      ResponsiveGridCol(
-        xs: 12,
-        child: 
-        
-        Form(
-            key: _formKey,
-            child: FutureBuilder(
+          ResponsiveGridCol(
+            xs: 12,
+            child: Form(
+                key: _formKey,
+                child: FutureBuilder(
                   builder: (context, alertSnap) {
-            if (alertSnap.hasData) {
-                final dropdown = alertSnap.data!;
-                // ignore: avoid_print
-                print(dropdown);
-              } else if (alertSnap.hasError) {
-                return Text('Error: ${alertSnap.error}');
-              } else {
-                return const Text('Loading...');
-              }
-            return ResponsiveGridRow(children: [  
-              ResponsiveGridCol(
-                xs: 12,
-                child: Container(
-                  ),
-              ),
-              ResponsiveGridCol(
-                xs: 12,
-                child: Container(
-                  ),
-              ),
-              ResponsiveGridCol(
-                xs: 12,
-                child: Container(),
-              ),
-              ResponsiveGridCol(
-                xs: 12,
-                child: Container(),
-              ),
-              ResponsiveGridCol(
-                xs: 12,
-                child: Container(
-                  height: 30,
-                  margin: const EdgeInsets.all(10.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // if (_formKey.currentState!.validate()) {
-                      //   if (myPassword.text == remyPassword.text) {
-                      //     submit(myEmail.text, myPassword.text, phone.text,
-                      //         dropdowns["state"]!, city.text, name.text);
-                      //     ScaffoldMessenger.of(context).showSnackBar(
-                      //       const SnackBar(content: Text('Processing Data')),
-                      //     );
-                      //   }
-                      // }
-                    },
-                    child: const Text('BROADCAST'),
-                  ),
-                ),
-              ),
-            ]);
-            },
-            future: loadTopics(),
-          )),
-      ),
-    ])
-    );
+                    if (alertSnap.hasData) {
+                      dropdown = alertSnap.data!;
+                    } else if (alertSnap.hasError) {
+                      return Text('Error: ${alertSnap.error}');
+                    } else {
+                      return const Text('Loading...');
+                    }
+
+                    return ResponsiveGridRow(children: [
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: DropdownButtonFormField<Map<String, dynamic>>(
+                          validator: (value) {
+                            if (value == null || value["body"] != "select") {
+                              return 'Please select an option';
+                            }
+                            return null;
+                          },
+                          items: dropdown.map((Map<String, dynamic> value) {
+                            return DropdownMenuItem<Map<String, dynamic>>(
+                                value: value, child: Text(value["body"]));
+                          }).toList(),
+                          onChanged: (Map<String, dynamic>? value) {
+                            setState(() {
+                              selected = value!["body"];
+                            });
+                          },
+                          value: selected,
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: TextFormField(
+                          controller: title,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a title';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Title',
+                          ),
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: TextFormField(
+                          controller: body,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter text';
+                            }
+                            return null;
+                          },
+                          maxLines: 8,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Body Text',
+                          ),
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: TextFormField(
+                          controller: link,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Optional link',
+                          ),
+                        ),
+                      ),
+                      ResponsiveGridCol(
+                        xs: 12,
+                        child: Container(
+                          height: 30,
+                          margin: const EdgeInsets.all(10.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                broadcast(title.text, body.text, link.text);
+                              }
+                            },
+                            child: const Text('BROADCAST'),
+                          ),
+                        ),
+                      ),
+                    ]);
+                  },
+                  future: loadTopics(),
+                )),
+          ),
+        ]));
   }
 }
