@@ -1,4 +1,5 @@
 //import 'package:cloud_functions/cloud_functions.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,16 +17,24 @@ class MyAdminPage extends StatefulWidget {
 
 class _MyAdminPageState extends State<MyAdminPage> {
   final state = LocalState();
+  final HttpsCallable callableBroadcast =
+      FirebaseFunctions.instance.httpsCallable('PublishEvent');
+
   Map<String, dynamic>? selected;
+
   Future<String> userData() async {
     final u = await state.getMap("USER");
     return u["city"];
   }
 
-  void broadcast(String title, String body, String link) {
+  void broadcast(String title, String body, String link) async {
     if (selected!.isNotEmpty) {
-      // ignore: avoid_print
-      print(title);
+      final username = await state.getMap("USER");
+      await callableBroadcast.call(<String, dynamic>{
+        'topic': selected,
+        'municipality': username['municipality'],
+        'payload': '$title $body $link'
+      });
     }
   }
 
@@ -39,7 +48,7 @@ class _MyAdminPageState extends State<MyAdminPage> {
   }
 
   Future loadTopics() async {
-    final _username = await state.getMap("USER");
+    final username = await state.getMap("USER");
 
     List<Map<String, dynamic>> data1 = [
       {"body": "events", "id": 1},

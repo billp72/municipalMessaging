@@ -36,10 +36,7 @@ class _MyHomePageState extends State<MyDetailPage> {
       FirebaseFunctions.instance.httpsCallable('getSelection');
   final HttpsCallable callableUpdate =
       FirebaseFunctions.instance.httpsCallable('updateAlert');
-  //test
-  final HttpsCallable callableTest =
-      FirebaseFunctions.instance.httpsCallable('PublishEvent');
-  //end test
+
   dynamic _username;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -92,15 +89,6 @@ class _MyHomePageState extends State<MyDetailPage> {
     // ignore: use_build_context_synchronously
     Navigator.pushNamedAndRemoveUntil(
         context, '/home', ModalRoute.withName('/home'));
-  }
-
-  void test() async {
-    _username = await state.getMap("USER");
-    await callableTest.call(<String, dynamic>{
-      'topic': alert,
-      'municipality': _username['municipality'],
-      'payload': 'This is a test message for test purposes'
-    });
   }
 
   void _submitForm() async {
@@ -250,7 +238,7 @@ class _MyHomePageState extends State<MyDetailPage> {
                                             padding: const EdgeInsets.fromLTRB(
                                                 10, 10, 10, 10),
                                             backgroundColor: Colors.red),
-                                        onPressed: test,
+                                        onPressed: () => {},
                                         child: const Text('DELETE ALERT',
                                             style: TextStyle(
                                               fontSize: 15.0,
