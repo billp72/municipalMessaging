@@ -103,7 +103,7 @@ class _MySignupPageState extends State<MySignupPage> {
       prefs.setString("USER", json);
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(
-          context, '/home', ModalRoute.withName('/home'));
+          context, '/admin', ModalRoute.withName('/admin'));
     }
   }
 

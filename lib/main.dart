@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'navigation/screens/login.dart';
 import 'navigation/screens/home.dart';
+import 'navigation/screens/admin.dart';
 import 'navigation/screens/resident.dart';
 import 'navigation/screens/government.dart';
 import 'navigation/landing_page.dart';
@@ -70,7 +71,7 @@ class MyApp extends StatelessWidget {
             ),
         '/municipality': (context) => const Government(title: 'Municipality'),
         '/home': (context) => const MyHomePage(title: 'Home'),
-        '/admin': (context) => const MyHomePage(title: 'Admin'),
+        '/admin': (context) => const MyAdminPage(title: 'Admin'),
       },
       theme: ThemeData(
         primarySwatch: myColor,
