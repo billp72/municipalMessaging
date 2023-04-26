@@ -33,12 +33,26 @@ class _MyAdminPageState extends State<MyAdminPage> {
 
   void broadcast(String title, String body, String link) async {
     if (selected!.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Processing Data')),
+      );
       final username = await state.getMap("USER");
-      await callableBroadcast.call(<String, dynamic>{
+      final result = await callableBroadcast.call(<String, dynamic>{
         'topic': selected!,
         'municipality': username['municipality'],
         'payload': '$title $body $link'
       });
+
+      if (result.data) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Complete')),
+        );
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('a failure occured')));
+      }
     }
   }
 
@@ -123,6 +137,10 @@ class _MyAdminPageState extends State<MyAdminPage> {
                         ResponsiveGridCol(
                           xs: 12,
                           child: DropdownButtonFormField<String>(
+                            decoration: const InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                            ),
                             validator: (value) {
                               if (value == null) {
                                 return 'Please select an option';
