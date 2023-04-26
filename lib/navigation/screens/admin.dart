@@ -1,4 +1,6 @@
 //import 'package:cloud_functions/cloud_functions.dart';
+// ignore_for_file: avoid_print
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +33,7 @@ class _MyAdminPageState extends State<MyAdminPage> {
     if (selected!.isNotEmpty) {
       final username = await state.getMap("USER");
       await callableBroadcast.call(<String, dynamic>{
-        'topic': selected,
+        'topic': selected!["body"],
         'municipality': username['municipality'],
         'payload': '$title $body $link'
       });
@@ -51,15 +53,15 @@ class _MyAdminPageState extends State<MyAdminPage> {
     final username = await state.getMap("USER");
 
     List<Map<String, dynamic>> data1 = [
-      {"body": "events", "id": 1},
-      {"body": "emergancy", "id": 2},
-      {"body": "taxes", "id": 3},
-      {"body": "ordinance", "id": 4},
-      {"body": "employment", "id": 5},
-      {"body": "publicworks", "id": 6},
-      {"body": "road_closers", "id": 7},
-      {"body": "construction", "id": 8},
-      {"body": "announcements", "id": 9},
+      {"id": 1, "body": "events"},
+      {"id": 2, "body": "emergancy"},
+      {"id": 3, "body": "taxes"},
+      {"id": 4, "body": "ordinance"},
+      {"id": 5, "body": "employment"},
+      {"id": 6, "body": "publicworks"},
+      {"id": 7, "body": "road_closers"},
+      {"id": 8, "body": "construction"},
+      {"id": 9, "body": "announcements"},
     ];
 
     return data1;
@@ -67,14 +69,13 @@ class _MyAdminPageState extends State<MyAdminPage> {
 
   @override
   Widget build(BuildContext context) {
+    //print(selected);
     final title = TextEditingController();
-    final body = TextEditingController();
+    final bodytext = TextEditingController();
     final link = TextEditingController();
     // ignore: no_leading_underscores_for_local_identifiers
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    List<Map<String, dynamic>> dropdown = [
-      {"body": "select", "id": 0}
-    ];
+    var dropdown = [];
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -97,7 +98,8 @@ class _MyAdminPageState extends State<MyAdminPage> {
             },
           ),
         ),
-        body: ResponsiveGridRow(children: [
+        body: SingleChildScrollView(
+            child: ResponsiveGridRow(children: [
           ResponsiveGridCol(
             xs: 12,
             child: Form(
@@ -117,21 +119,21 @@ class _MyAdminPageState extends State<MyAdminPage> {
                         xs: 12,
                         child: DropdownButtonFormField<Map<String, dynamic>>(
                           validator: (value) {
-                            if (value == null || value["body"] != "select") {
+                            if (value == null) {
                               return 'Please select an option';
                             }
                             return null;
                           },
-                          items: dropdown.map((Map<String, dynamic> value) {
+                          items: (dropdown).map((item) {
                             return DropdownMenuItem<Map<String, dynamic>>(
-                                value: value, child: Text(value["body"]));
+                                value: item, child: Text(item["body"]));
                           }).toList(),
-                          onChanged: (Map<String, dynamic>? value) {
+                          onChanged: (value) {
                             setState(() {
-                              selected = value!["body"];
+                              selected = value!;
                             });
                           },
-                          value: selected,
+                          value: dropdown[0],
                         ),
                       ),
                       ResponsiveGridCol(
@@ -153,7 +155,7 @@ class _MyAdminPageState extends State<MyAdminPage> {
                       ResponsiveGridCol(
                         xs: 12,
                         child: TextFormField(
-                          controller: body,
+                          controller: bodytext,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter text';
@@ -185,7 +187,7 @@ class _MyAdminPageState extends State<MyAdminPage> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                broadcast(title.text, body.text, link.text);
+                                broadcast(title.text, bodytext.text, link.text);
                               }
                             },
                             child: const Text('BROADCAST'),
@@ -197,6 +199,6 @@ class _MyAdminPageState extends State<MyAdminPage> {
                   future: loadTopics(),
                 )),
           ),
-        ]));
+        ])));
   }
 }
