@@ -1,6 +1,8 @@
 //import 'package:cloud_functions/cloud_functions.dart';
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +24,7 @@ class _MyAdminPageState extends State<MyAdminPage> {
   final HttpsCallable callableBroadcast =
       FirebaseFunctions.instance.httpsCallable('PublishEvent');
 
-  Map<String, dynamic>? selected;
+  String? selected;
 
   Future<String> userData() async {
     final u = await state.getMap("USER");
@@ -33,7 +35,7 @@ class _MyAdminPageState extends State<MyAdminPage> {
     if (selected!.isNotEmpty) {
       final username = await state.getMap("USER");
       await callableBroadcast.call(<String, dynamic>{
-        'topic': selected!["body"],
+        'topic': selected!,
         'municipality': username['municipality'],
         'payload': '$title $body $link'
       });
@@ -49,22 +51,27 @@ class _MyAdminPageState extends State<MyAdminPage> {
         context, '/login', ModalRoute.withName('/login'));
   }
 
-  Future loadTopics() async {
-    final username = await state.getMap("USER");
+  Future<List<dynamic>> loadTopics() async {
+    List<String> newArray = [];
 
-    List<Map<String, dynamic>> data1 = [
-      {"id": 1, "body": "events"},
-      {"id": 2, "body": "emergancy"},
-      {"id": 3, "body": "taxes"},
-      {"id": 4, "body": "ordinance"},
-      {"id": 5, "body": "employment"},
-      {"id": 6, "body": "publicworks"},
-      {"id": 7, "body": "road_closers"},
-      {"id": 8, "body": "construction"},
-      {"id": 9, "body": "announcements"},
+    List<Map<String, Object>> data1 = [
+      {"hex": 0xe23e, "body": "events", "color": 0xffef6c00},
+      {"hex": 0xe151, "body": "emergancy", "color": 0xffffca28},
+      {"hex": 0xe7b0, "body": "taxes", "color": 0xff90a4ae},
+      {"hex": 0xf05c1, "body": "ordinance", "color": 0xff78909c},
+      {"hex": 0xf4d5, "body": "employment", "color": 0xff01579b},
+      {"hex": 0xe4f0, "body": "publicworks", "color": 0xff004d40},
+      {"hex": 0xe757, "body": "road_closers", "color": 0xffd50000},
+      {"hex": 0xe189, "body": "construction", "color": 0xffff5722},
+      {"hex": 0xe087, "body": "announcements", "color": 0xfff48fb1},
     ];
 
-    return data1;
+    for (int i = 0; i < data1.length; i++) {
+      String? val = data1[i]["body"] as String?;
+      newArray.add(val!);
+    }
+
+    return newArray;
   }
 
   @override
@@ -75,7 +82,7 @@ class _MyAdminPageState extends State<MyAdminPage> {
     final link = TextEditingController();
     // ignore: no_leading_underscores_for_local_identifiers
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    var dropdown = [];
+
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -105,96 +112,96 @@ class _MyAdminPageState extends State<MyAdminPage> {
             child: Form(
                 key: _formKey,
                 child: FutureBuilder(
-                  builder: (context, alertSnap) {
-                    if (alertSnap.hasData) {
-                      dropdown = alertSnap.data!;
+                  builder: (context, AsyncSnapshot<List<dynamic>> alertSnap) {
+                    if (alertSnap.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
                     } else if (alertSnap.hasError) {
                       return Text('Error: ${alertSnap.error}');
                     } else {
-                      return const Text('Loading...');
-                    }
-
-                    return ResponsiveGridRow(children: [
-                      ResponsiveGridCol(
-                        xs: 12,
-                        child: DropdownButtonFormField<Map<String, dynamic>>(
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Please select an option';
-                            }
-                            return null;
-                          },
-                          items: (dropdown).map((item) {
-                            return DropdownMenuItem<Map<String, dynamic>>(
-                                value: item, child: Text(item["body"]));
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selected = value!;
-                            });
-                          },
-                          value: dropdown[0],
-                        ),
-                      ),
-                      ResponsiveGridCol(
-                        xs: 12,
-                        child: TextFormField(
-                          controller: title,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a title';
-                            }
-                            return null;
-                          },
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Title',
-                          ),
-                        ),
-                      ),
-                      ResponsiveGridCol(
-                        xs: 12,
-                        child: TextFormField(
-                          controller: bodytext,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter text';
-                            }
-                            return null;
-                          },
-                          maxLines: 8,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Body Text',
-                          ),
-                        ),
-                      ),
-                      ResponsiveGridCol(
-                        xs: 12,
-                        child: TextFormField(
-                          controller: link,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Optional link',
-                          ),
-                        ),
-                      ),
-                      ResponsiveGridCol(
-                        xs: 12,
-                        child: Container(
-                          height: 30,
-                          margin: const EdgeInsets.all(10.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                broadcast(title.text, bodytext.text, link.text);
+                      final data = alertSnap.data!.cast<String>();
+                      return ResponsiveGridRow(children: [
+                        ResponsiveGridCol(
+                          xs: 12,
+                          child: DropdownButtonFormField<String>(
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Please select an option';
                               }
+                              return null;
                             },
-                            child: const Text('BROADCAST'),
+                            value: selected,
+                            items: data.map((String item) {
+                              return DropdownMenuItem<String>(
+                                  value: item, child: Text(item));
+                            }).toList(),
+                            onChanged: (String? value) {
+                              setState(() {
+                                selected = value!;
+                              });
+                            },
                           ),
                         ),
-                      ),
-                    ]);
+                        ResponsiveGridCol(
+                          xs: 12,
+                          child: TextFormField(
+                            controller: title,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a title';
+                              }
+                              return null;
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Title',
+                            ),
+                          ),
+                        ),
+                        ResponsiveGridCol(
+                          xs: 12,
+                          child: TextFormField(
+                            controller: bodytext,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter text';
+                              }
+                              return null;
+                            },
+                            maxLines: 8,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Body Text',
+                            ),
+                          ),
+                        ),
+                        ResponsiveGridCol(
+                          xs: 12,
+                          child: TextFormField(
+                            controller: link,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Optional link',
+                            ),
+                          ),
+                        ),
+                        ResponsiveGridCol(
+                          xs: 12,
+                          child: Container(
+                            height: 30,
+                            margin: const EdgeInsets.all(10.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  broadcast(
+                                      title.text, bodytext.text, link.text);
+                                }
+                              },
+                              child: const Text('BROADCAST'),
+                            ),
+                          ),
+                        ),
+                      ]);
+                    }
                   },
                   future: loadTopics(),
                 )),
