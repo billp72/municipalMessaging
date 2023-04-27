@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 import '../../getUserFromPreference.dart';
 import '../flexList/listAlert.dart';
-//import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
 
 class CreateAlert extends StatefulWidget {
   const CreateAlert({Key? key, required this.title}) : super(key: key);
@@ -58,12 +58,12 @@ class _MyHomePageState extends State<CreateAlert> {
 
   void _captureSubmitted(val) async {
     if (val.containsKey("frequency") && val.containsKey("delivery")) {
-      //final DateTime now = DateTime.now();
-      // final DateFormat formatter = DateFormat('dd-mm-yyyy');
-      // final String formatted = formatter.format(now);
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('yyyy-MM-dd').format(now);
+
       _username = await state.getMap("USER");
       val["uid"] = _username["uid"];
-      val["date"] = '04/16/2023';
+      val["date"] = formattedDate;
       submittedValues.add(val);
     } else if (submittedValues.isNotEmpty) {
       List<Map<String, dynamic>> copyOfList = List.from(submittedValues);

@@ -40,7 +40,9 @@ class _MyAdminPageState extends State<MyAdminPage> {
       final result = await callableBroadcast.call(<String, dynamic>{
         'topic': selected!,
         'municipality': username['municipality'],
-        'payload': '$title $body $link'
+        'admin_uid': username["uid"],
+        'title': title,
+        'body': '$body $link'
       });
 
       if (result.data) {
