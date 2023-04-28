@@ -43,7 +43,7 @@ class MyDropdownState extends State<MyDropdown>
   MyDropdownState(
       this.selected, this.drop, this.onSelectedValueChange, this.enable);
 
-  List<String> createDdArray() {
+  Future createDdArray() async {
     List<String> thearray = [];
     if (selected == "state") {
       thearray = [
@@ -69,39 +69,42 @@ class MyDropdownState extends State<MyDropdown>
     return thearray;
   }
 
-  List<String> returnList() {
-    return enable() ? createDdArray() : [];
+  Future returnList() async {
+    return enable() ? await createDdArray() : [];
   }
-
-  void doSomething() {
-    // Do something here
-    // ignore: avoid_print
-    //widget.key?.currentState?.reset();
-    // ignore: avoid_print
-  }
-
-  //bool onDropdownChanged = false;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return DropdownButtonFormField<String>(
-      value: enable() ? drop[selected] : null,
-      onChanged: (String? value) {
-        setState(() {
-          onSelectedValueChange(value!, selected);
-        });
-      },
-      validator: (value) {
-        if (value == null || value == 'Select $selected') {
-          return 'Please select an option';
-        }
-        return null;
-      },
-      items: returnList().map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(value: value, child: Text(value));
-      }).toList(),
-    );
+    return FutureBuilder(
+        builder: (context, alertSnap) {
+          if (alertSnap.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (alertSnap.hasError) {
+            return Text('Error: ${alertSnap.error}');
+          } else {
+            List<String> data = alertSnap.data!;
+            return DropdownButtonFormField<String>(
+              value: enable() ? drop[selected] : null,
+              onChanged: (String? value) {
+                setState(() {
+                  onSelectedValueChange(value!, selected);
+                });
+              },
+              validator: (value) {
+                if (value == null || value == 'Select $selected') {
+                  return 'Please select an option';
+                }
+                return null;
+              },
+              items: data.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                    value: value, child: Text(value));
+              }).toList(),
+            );
+          }
+        },
+        future: returnList());
   }
 
   @override
