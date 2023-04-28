@@ -8,13 +8,8 @@ import '../icons/my_icon.dart';
 
 class MyDetailPage extends StatefulWidget {
   final String alert;
-  final String historyID;
 
-  const MyDetailPage(
-      {Key? key,
-      required this.title,
-      required this.alert,
-      required this.historyID})
+  const MyDetailPage({Key? key, required this.title, required this.alert})
       : super(key: key);
 
   final String title;
@@ -23,12 +18,12 @@ class MyDetailPage extends StatefulWidget {
   // ignore: no_logic_in_create_state
   State<MyDetailPage> createState() =>
       // ignore: no_logic_in_create_state
-      _MyHomePageState(alert: alert, historyID: historyID);
+      _MyHomePageState(alert: alert);
 }
 
 class _MyHomePageState extends State<MyDetailPage> {
   final String alert;
-  final String historyID;
+
   final state = LocalState();
   final HttpsCallable historycallable =
       FirebaseFunctions.instance.httpsCallable('getHistory');
@@ -40,7 +35,7 @@ class _MyHomePageState extends State<MyDetailPage> {
   dynamic _username;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  _MyHomePageState({required this.alert, required this.historyID});
+  _MyHomePageState({required this.alert});
 
   Future<String> userData() async {
     final u = await state.getMap("USER");
@@ -77,8 +72,9 @@ class _MyHomePageState extends State<MyDetailPage> {
   Future _loadUserInfo() async {
     _username = await state.getMap("USER");
     final resp = await historycallable
-        .call(<String, dynamic>{historyID: historyID, 'uid': _username['uid']});
+        .call(<String, dynamic>{'uid': _username['uid'], 'type': alert});
     final data = resp.data;
+
     final items =
         List<ListItem>.generate(data.length, (i) => _formatListTypes(i, data));
 

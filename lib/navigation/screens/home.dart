@@ -36,15 +36,15 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       myDate = DateTime.now();
     }
-    final String id = data[i]["historyID"] ?? 'srggtrt';
+
     final String type = data[i]["type"] ?? 'fff';
     return i == 0
-        ? HeadingItem('Click to add an alert', type, id)
+        ? HeadingItem('Click to add an alert', type, '')
         : MessageItem(
             'Subscribed to: ${data[i]["type"].toUpperCase()}',
             'Recieve ${data[i]["frequency"]} messages. Last sent $myDate',
             type,
-            id);
+            '');
   }
 
   Future _loadUserInfo() async {
@@ -67,14 +67,13 @@ class _MyHomePageState extends State<MyHomePage> {
         context, '/login', ModalRoute.withName('/login'));
   }
 
-  void _selectPage(alert, historyID, int index) {
+  void _selectPage(alert, int index) {
     if (index > 0) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => MyDetailPage(
             alert: alert,
-            historyID: historyID,
             title: '',
           ),
         ),
@@ -133,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             size: 150.0,
                           ),
                           onPressed: () {
-                            _selectPage('none', 'none', 0);
+                            _selectPage('none', 0);
                           }),
                       const Text(
                         "Click to add alarm",
@@ -149,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     title: item.buildTitle(context),
                     subtitle: item.buildSubtitle(context),
                     onTap: () {
-                      _selectPage(item.type, item.historyID, index);
+                      _selectPage(item.type, index);
                     },
                   );
                 },
