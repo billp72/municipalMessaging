@@ -43,7 +43,7 @@ class MyDropdownState extends State<MyDropdown>
   MyDropdownState(
       this.selected, this.drop, this.onSelectedValueChange, this.enable);
 
-  Future createDdArray() async {
+  Future<List<String>> createDdArray() async {
     List<String> thearray = [];
     if (selected == "state") {
       thearray = [
@@ -69,7 +69,7 @@ class MyDropdownState extends State<MyDropdown>
     return thearray;
   }
 
-  Future returnList() async {
+  Future<List<String>> returnList() async {
     return enable() ? await createDdArray() : [];
   }
 
