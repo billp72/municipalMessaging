@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,12 +39,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final String type = data[i]["type"] ?? 'fff';
     return i == 0
-        ? HeadingItem('Click to add an alert', type, '')
+        ? HeadingItem('Click to add an alert', type)
         : MessageItem(
             'Subscribed to: ${data[i]["type"].toUpperCase()}',
             'Recieve ${data[i]["frequency"]} messages. Last sent $myDate',
-            type,
-            '');
+            type);
   }
 
   Future _loadUserInfo() async {
@@ -62,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await FirebaseAuth.instance.signOut();
     prefs.remove("USER");
-    // ignore: use_build_context_synchronously
+    if (!context.mounted) return;
     Navigator.pushNamedAndRemoveUntil(
         context, '/login', ModalRoute.withName('/login'));
   }

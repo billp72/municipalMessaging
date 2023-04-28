@@ -12,9 +12,8 @@ abstract class ListItem {
 class HeadingItem implements ListItem {
   final String heading;
   final String type;
-  final String historyID;
 
-  HeadingItem(this.heading, this.type, this.historyID);
+  HeadingItem(this.heading, this.type);
 
   @override
   Widget buildTitle(BuildContext context) {
@@ -33,9 +32,8 @@ class MessageItem implements ListItem {
   final String sender;
   final String body;
   final String type;
-  final String historyID;
 
-  MessageItem(this.sender, this.body, this.type, this.historyID);
+  MessageItem(this.sender, this.body, this.type);
 
   @override
   Widget buildTitle(BuildContext context) => Text(sender,

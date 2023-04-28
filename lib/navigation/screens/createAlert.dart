@@ -27,7 +27,7 @@ class _MyHomePageState extends State<CreateAlert> {
 
   final List<Map<String, dynamic>> submittedValues = [];
 
-  void _submitForm() async {
+  void _submitForm() {
     if (_formKey.currentState!.validate()) {
       String message = "Processing submission";
       if (submittedValues.isEmpty) {
@@ -41,18 +41,19 @@ class _MyHomePageState extends State<CreateAlert> {
         ),
       );
 
-      final resp =
-          await callableAdd.call(<String, dynamic>{'data': submittedValues});
-      final data = resp.data;
-      if (data) {
-        _handleBack();
-      } else {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Something went wrong. Alerts not added.')),
-        );
-      }
+      callableAdd
+          .call(<String, dynamic>{'data': submittedValues}).then((data) => {
+                if (data.data)
+                  {_handleBack()}
+                else
+                  {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content:
+                              Text('Something went wrong. Alerts not added.')),
+                    )
+                  }
+              });
     }
   }
 
@@ -112,7 +113,7 @@ class _MyHomePageState extends State<CreateAlert> {
     return items;
   }
 
-  void _handleBack() async {
+  void _handleBack() {
     Navigator.pushReplacementNamed(context, '/home');
   }
 

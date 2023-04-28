@@ -56,9 +56,9 @@ class _MyHomePageState extends State<MyDetailPage> {
 
   _formatListTypes(int i, data) {
     return i == 0
-        ? HeadingItem('Message History', '', '')
+        ? HeadingItem('Message History', '')
         : MessageItem('Subscribed to: ${data[i]["type"].toUpperCase()}',
-            'Msg: ${data[i]["desc"]}', '', '');
+            'Msg: ${data[i]["desc"]}', '');
   }
 
   Future _loadFormSelection() async {
@@ -81,13 +81,12 @@ class _MyHomePageState extends State<MyDetailPage> {
     return items;
   }
 
-  void _handleBack() async {
-    // ignore: use_build_context_synchronously
+  void _handleBack() {
     Navigator.pushNamedAndRemoveUntil(
         context, '/home', ModalRoute.withName('/home'));
   }
 
-  void _submitForm() async {
+  void _submitForm() {
     if (_formKey.currentState!.validate()) {
       String message = "Processing submission";
 
@@ -98,18 +97,21 @@ class _MyHomePageState extends State<MyDetailPage> {
         ),
       );
 
-      final resp = await callableUpdate
-          .call(<String, dynamic>{'uid': _username['uid'], 'data': dropdowns});
-      final data = resp.data;
-      if (data) {
-        _handleBack();
-      } else {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Something went wrong. Alerts not updated.')),
-        );
-      }
+      callableUpdate.call(<String, dynamic>{
+        'uid': _username['uid'],
+        'data': dropdowns
+      }).then((data) => {
+            if (data.data)
+              {_handleBack()}
+            else
+              {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content:
+                          Text('Something went wrong. Alerts not updated.')),
+                )
+              }
+          });
     }
   }
 
