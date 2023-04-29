@@ -1,8 +1,6 @@
 // ignore: file_names
 import 'package:cloud_functions/cloud_functions.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 import '../../getUserFromPreference.dart';
 import '../flexList/listAlert.dart';
 import 'package:intl/intl.dart';
@@ -121,7 +119,6 @@ class _MyHomePageState extends State<CreateAlert> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          //automaticallyImplyLeading: false,
           actions: [
             Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 110.0, 0),
