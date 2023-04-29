@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../dropdownMenu/dropdownmenu.dart';
 import '../../getDeviceInfo.dart';
 
 class Government extends StatelessWidget {
@@ -63,10 +62,6 @@ class _MySignupPageState extends State<MySignupPage> {
     return true;
   }
 
-  void _setSelectedValue(String value, String type) async {
-    dropdowns[type] = value;
-  }
-
   Future createUser(credentials, String phone, String state, String city,
       String name, String email) async {
     String c = city.replaceAll(' ', '');
@@ -110,10 +105,12 @@ class _MySignupPageState extends State<MySignupPage> {
 
   Future submit(String email, String password, String phone, String state,
       String city, String name) async {
+    String cityLower = city.toLowerCase();
+    String stateLower = state.toLowerCase();
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      createUser(userCredential, phone, state, city, name, email);
+      createUser(userCredential, phone, stateLower, cityLower, name, email);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -140,6 +137,7 @@ class _MySignupPageState extends State<MySignupPage> {
     final myEmail = TextEditingController();
     final name = TextEditingController();
     final city = TextEditingController();
+    final state = TextEditingController();
     final phone = TextEditingController();
     final remyPassword = TextEditingController();
     return ResponsiveGridRow(children: [
@@ -167,13 +165,22 @@ class _MySignupPageState extends State<MySignupPage> {
               ResponsiveGridCol(
                 xs: 12,
                 child: Container(
-                    height: 50,
-                    margin: const EdgeInsets.all(10.0),
-                    child: MyDropdown(
-                        selected: "state",
-                        drop: dropdowns,
-                        enable: enabled,
-                        onSelectedValueChange: _setSelectedValue)),
+                  height: 50,
+                  margin: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    controller: state,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'State',
+                    ),
+                  ),
+                ),
               ),
               ResponsiveGridCol(
                 xs: 12,
@@ -285,7 +292,7 @@ class _MySignupPageState extends State<MySignupPage> {
                       if (_formKey.currentState!.validate()) {
                         if (myPassword.text == remyPassword.text) {
                           submit(myEmail.text, myPassword.text, phone.text,
-                              dropdowns["state"]!, city.text, name.text);
+                              state.text, city.text, name.text);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Processing Data')),
                           );

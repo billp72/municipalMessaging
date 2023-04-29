@@ -1,8 +1,6 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 
-import '../../getUserFromPreference.dart';
-
 // ignore: must_be_immutable
 class MyDropdown extends StatefulWidget {
   // ignore: prefer_typing_uninitialized_variables
@@ -37,7 +35,7 @@ class MyDropdownState extends State<MyDropdown>
 
   // ignore: prefer_typing_uninitialized_variables
   final drop;
-  final state = LocalState();
+
   final HttpsCallable cityCallable =
       FirebaseFunctions.instance.httpsCallable('getCities');
   final HttpsCallable stateCallable =
@@ -47,13 +45,10 @@ class MyDropdownState extends State<MyDropdown>
       this.selected, this.drop, this.onSelectedValueChange, this.enable);
 
   Future<List<String>> createDdArray() async {
-    final username = await state.getMap("USER");
     List<String> thearray = [];
     if (selected == "state") {
-      final state =
-          await stateCallable.call(<String, dynamic>{'uid': username['uid']});
-      thearray = state.data;
-      //  [
+      var list1 = await getStates();
+      thearray = list1; //[
       //   'Select $selected',
       //   'Maine',
       //   'New Hamshire',
@@ -62,9 +57,8 @@ class MyDropdownState extends State<MyDropdown>
       //   'Pennsylvyania'
       // ];
     } else if (selected == "city") {
-      final city =
-          await cityCallable.call(<String, dynamic>{'uid': username['uid']});
-      thearray = city.data; //['Select $selected', 'Lisbon', 'Portland'];
+      var list2 = await getCities();
+      thearray = list2; //['Select $selected', 'Lisbon', 'Portland'];
     } else if (selected == "frequency") {
       thearray = ['Select $selected', 'all', 'daily', 'weekly', 'monthly'];
     } else if (selected == "delivery") {
@@ -72,6 +66,20 @@ class MyDropdownState extends State<MyDropdown>
     }
 
     return thearray;
+  }
+
+  Future<List<String>> getCities() async {
+    HttpsCallableResult<dynamic> result = await cityCallable.call();
+    List<dynamic> data = result.data as List<dynamic>;
+    List<String> stringList = data.cast<String>();
+    return stringList;
+  }
+
+  Future<List<String>> getStates() async {
+    HttpsCallableResult<dynamic> result = await stateCallable.call();
+    List<dynamic> data = result.data as List<dynamic>;
+    List<String> stringList = data.cast<String>();
+    return stringList;
   }
 
   Future<List<String>> returnList() async {
