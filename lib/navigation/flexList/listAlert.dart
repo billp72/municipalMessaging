@@ -44,10 +44,11 @@ class _MyStatefulWidgetState extends State<MessageItem>
 
   bool isChecked = false;
 
-  final Map<String, String> dropdowns = {
+  final Map<String, Object> dropdowns = {
     "frequency": "Select frequency",
     "delivery": "Select delivery",
-    "type": ""
+    "type": "",
+    "start": false
   };
 
   void _setSelectedValue(String value, String type) async {
