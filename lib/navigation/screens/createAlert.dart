@@ -61,7 +61,7 @@ class _MyHomePageState extends State<CreateAlert> {
     if (val.containsKey("frequency") && val.containsKey("delivery")) {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-
+      val["start"] = false;
       _username = await state.getMap("USER");
       val["uid"] = _username["uid"];
       val["date"] = formattedDate;
