@@ -21,9 +21,9 @@ Future<void> main() async {
   final authenticate = FirebaseAuth.instance;
 
   //remove emulator when deployed
-  FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
-  authenticate.useAuthEmulator("localhost", 9099);
-  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+  // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
+  // authenticate.useAuthEmulator("localhost", 9099);
+  // FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
 
   var auth = AuthServices();
   final prefs = await SharedPreferences.getInstance();
