@@ -179,7 +179,7 @@ class _MyHomePageState extends State<MyLoginPage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 18,
                 height: 1.3,
                 color: Colors.grey[600],
               )),
