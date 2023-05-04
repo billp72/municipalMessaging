@@ -48,17 +48,10 @@ class MyDropdownState extends State<MyDropdown>
     List<String> thearray = [];
     if (selected == "state") {
       var list1 = await getStates();
-      thearray = list1; //[
-      //   'Select $selected',
-      //   'Maine',
-      //   'New Hamshire',
-      //   'New York',
-      //   'New Jersey',
-      //   'Pennsylvyania'
-      // ];
+      thearray = list1;
     } else if (selected == "city") {
       var list2 = await getCities();
-      thearray = list2; //['Select $selected', 'Lisbon', 'Portland'];
+      thearray = list2;
     } else if (selected == "frequency") {
       thearray = ['Select $selected', 'all', 'daily', 'weekly', 'monthly'];
     } else if (selected == "delivery") {
