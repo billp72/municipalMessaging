@@ -92,7 +92,10 @@ class MyDropdownState extends State<MyDropdown>
     return FutureBuilder(
         builder: (context, alertSnap) {
           if (alertSnap.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const SizedBox(
+                width: 5,
+                height: 5,
+                child: CircularProgressIndicator.adaptive());
           } else if (alertSnap.hasError) {
             return Text('Error: ${alertSnap.error}');
           } else {
