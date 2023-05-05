@@ -57,8 +57,8 @@ class _MyHomePageState extends State<MyDetailPage> {
   _formatListTypes(int i, data) {
     return i == 0
         ? HeadingItem('Message History', '')
-        : MessageItem('Subscribed to: ${data[i]["type"].toUpperCase()}',
-            'Msg: ${data[i]["desc"]}', '');
+        : MessageItem('Message from: ${data[i]["type"].toUpperCase()}',
+            '${data[i]["desc"]}', '');
   }
 
   Future _loadFormSelection() async {
