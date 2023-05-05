@@ -104,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final tit = snapshot.data!;
-                return Text('Alerts for $tit');
+                return Text('Topics for $tit');
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
