@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../getDeviceInfo.dart';
+import '../flexList/states_list.dart';
 
 class Government extends StatelessWidget {
   const Government({Key? key, required this.title}) : super(key: key);
@@ -53,6 +56,7 @@ class MySignupPage extends StatefulWidget {
 class _MySignupPageState extends State<MySignupPage> {
   final dropdowns = {'state': 'Select state'};
   FocusNode inputNode = FocusNode();
+  String? selected;
 
   void openKeyboard() {
     FocusScope.of(context).requestFocus(inputNode);
@@ -96,36 +100,55 @@ class _MySignupPageState extends State<MySignupPage> {
       String json = jsonEncode(data);
 
       prefs.setString("USER", json);
-      // ignore: use_build_context_synchronously
       if (!context.mounted) return;
       Navigator.pushNamedAndRemoveUntil(
           context, '/admin', ModalRoute.withName('/admin'));
     }
   }
 
-  Future submit(String email, String password, String phone, String state,
-      String city, String name) async {
-    String cityLower = city.toLowerCase();
-    String stateLower = state.toLowerCase();
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      createUser(userCredential, phone, stateLower, cityLower, name, email);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('The password provided is too weak.')),
-        );
-      } else if (e.code == 'email-already-in-use') {
+  Future checkMunicipality(String muni) async {
+    final HttpsCallable check =
+        FirebaseFunctions.instance.httpsCallable('checkAdmin');
+    final answer = await check.call({'municipality': muni});
+    return answer.data;
+  }
+
+  Future submit(String email, String password, String phone, String city,
+      String name) async {
+    if (selected != null) {
+      final String c = city.replaceAll(' ', '');
+      final String s = selected!.replaceAll(' ', '');
+      final String muni = '${c.toLowerCase()}_${s.toLowerCase()}';
+      final exists = await checkMunicipality(muni);
+      if (!exists) {
+        try {
+          UserCredential userCredential = await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(email: email, password: password);
+          createUser(userCredential, phone, selected!, city, name, email);
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'weak-password') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('The password provided is too weak.')),
+            );
+          } else if (e.code == 'email-already-in-use') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('The account already exists for that email.')),
+            );
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$e')),
+          );
+        }
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('The account already exists for that email.')),
+              content:
+                  Text('this account has already been created by the admin')),
         );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$e')),
-      );
     }
   }
 
@@ -137,7 +160,6 @@ class _MySignupPageState extends State<MySignupPage> {
     final myEmail = TextEditingController();
     final name = TextEditingController();
     final city = TextEditingController();
-    final state = TextEditingController();
     final phone = TextEditingController();
     final remyPassword = TextEditingController();
     return ResponsiveGridRow(children: [
@@ -167,18 +189,27 @@ class _MySignupPageState extends State<MySignupPage> {
                 child: Container(
                   height: 50,
                   margin: const EdgeInsets.all(10.0),
-                  child: TextFormField(
-                    controller: state,
+                  child: DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                      contentPadding:
+                          EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                    ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                      if (value == null || value == 'Select state') {
+                        return 'Please select an option';
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'State',
-                    ),
+                    value: selected,
+                    items: states().map((String item) {
+                      return DropdownMenuItem<String>(
+                          value: item, child: Text(item));
+                    }).toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        selected = value!;
+                      });
+                    },
                   ),
                 ),
               ),
@@ -292,7 +323,7 @@ class _MySignupPageState extends State<MySignupPage> {
                       if (_formKey.currentState!.validate()) {
                         if (myPassword.text == remyPassword.text) {
                           submit(myEmail.text, myPassword.text, phone.text,
-                              state.text, city.text, name.text);
+                              city.text, name.text);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Processing Data')),
                           );
