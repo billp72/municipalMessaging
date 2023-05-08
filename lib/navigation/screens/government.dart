@@ -173,22 +173,6 @@ class _MySignupPageState extends State<MySignupPage> {
                 child: Container(
                   height: 50,
                   margin: const EdgeInsets.all(10.0),
-                  child: TextFormField(
-                    controller: name,
-                    focusNode: inputNode,
-                    autofocus: true,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Name (optional)',
-                    ),
-                  ),
-                ),
-              ),
-              ResponsiveGridCol(
-                xs: 12,
-                child: Container(
-                  height: 50,
-                  margin: const EdgeInsets.all(10.0),
                   child: DropdownButtonFormField<String>(
                     decoration: const InputDecoration(
                       contentPadding:
@@ -229,6 +213,22 @@ class _MySignupPageState extends State<MySignupPage> {
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'City',
+                    ),
+                  ),
+                ),
+              ),
+              ResponsiveGridCol(
+                xs: 12,
+                child: Container(
+                  height: 50,
+                  margin: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    controller: name,
+                    focusNode: inputNode,
+                    autofocus: true,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Name (optional)',
                     ),
                   ),
                 ),
